@@ -3,11 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мой первый сайт</title>
+  <title>✞Awizz BIO✞</title>
+
+  <style>
+    /* ---------- Цвета в одном месте ---------- */
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --accent: #38bdf8;
+    }
+
+    /* ---------- Общие настройки ---------- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ---------- Шапка ---------- */
+    header {
+      text-align: center;
+      padding: 100px 20px 80px;
+      background: radial-gradient(circle at right, #4a1010, #470066);
+      animation: fadeUp 1s ease both;
+    }
+
+    header h1 { font-size: 2.8rem; margin-bottom: 10px; }
+    header p  { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
+
+    /* ---------- Кнопки ---------- */
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 999px;
+      background: white;
+      color: #0f172a;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ---------- Основная часть ---------- */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    h2 { text-align: center; margin-bottom: 30px; color: var(--accent); }
+
+    .about { text-align: center; margin-bottom: 60px; animation: fadeUp 1s 0.3s ease both; }
+
+    /* ---------- Карточки ---------- */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 24px;
+      border-radius: 16px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: fadeUp 1s 0.5s ease both;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.25);
+    }
+    .card .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .card h3 { margin-bottom: 8px; }
+    .card .btn { margin-top: 16px; background: var(--accent); }
+
+    footer { text-align: center; padding: 30px; opacity: 0.6; }
+
+    /* ---------- Всплывающее окно ---------- */
+    .overlay {
+      position: fixed;
+      inset: 0;                       /* растянуть на весь экран */
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;                     /* по умолчанию скрыто */
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      padding: 20px;
+    }
+    .overlay.open { opacity: 1; visibility: visible; }
+
+    .modal {
+      position: relative;
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      transform: scale(0.8);
+      transition: transform 0.3s;
+    }
+    .overlay.open .modal { transform: scale(1); }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    /* ---------- Анимация появления ---------- */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Привет, мир!</h1>
-  <p>Это моя первая страница на HTML.</p>
-  <a href="https://github.com">Перейти на GitHub</a>
+
+  <header>
+    <img src="avatar.jpg" alt="Моя аватарка" class="avatar">
+    <p>Это мой сайт. Здесь я рассказываю о том, что мне интересно.</p>
+    <button class="btn" data-title="✞Сайт Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
+      Рискни нажать)
+    </button>
+  </header>
+
+  <main>
+    <section class="about">
+      <h2>Обо мне</h2>
+      <p>Напиши здесь пару предложений о себе или о теме сайта: чем занимаешься, что любишь, зачем создал эту страницу.</p>
+    </section>
+
+    <section>
+      <h2>Что здесь есть</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="icon">🎨</div>
+          <h3>Первый раздел</h3>
+          <p>Короткое описание первого раздела.</p>
+          <button class="btn" data-title="Первый раздел" data-text="Здесь можно рассказать подробнее о первом разделе.">Подробнее</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">📚</div>
+          <h3>Второй раздел</h3>
+          <p>Короткое описание второго раздела.</p>
+          <button class="btn" data-title="Второй раздел" data-text="Здесь можно рассказать подробнее о втором разделе.">Подробнее</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">🚀</div>
+          <h3>Третий раздел</h3>
+          <p>Короткое описание третьего раздела.</p>
+          <button class="btn" data-title="Третий раздел" data-text="Здесь можно рассказать подробнее о третьем разделе.">Подробнее</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 Мой сайт</footer>
+
+  <!-- Всплывающее окно (изначально скрыто) -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <button class="close" id="closeBtn" aria-label="Закрыть">&times;</button>
+      <h3 id="modalTitle"></h3>
+      <p id="modalText"></p>
+    </div>
+  </div>
+
+  <script>
+    const overlay    = document.getElementById("overlay");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText  = document.getElementById("modalText");
+    const closeBtn   = document.getElementById("closeBtn");
+
+    // Находим все кнопки, у которых есть data-title
+    document.querySelectorAll("[data-title]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        modalTitle.textContent = button.dataset.title;
+        modalText.textContent  = button.dataset.text;
+        overlay.classList.add("open");
+      });
+    });
+
+    function closeModal() {
+      overlay.classList.remove("open");
+    }
+
+    // Закрыть: крестик, клик по тёмному фону, клавиша Esc
+    closeBtn.addEventListener("click", closeModal);
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) closeModal();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeModal();
+    });
+  </script>
+
 </body>
 </html>
