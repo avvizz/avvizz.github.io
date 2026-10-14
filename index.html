@@ -3,15 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>✞Awizz BIO✞</title>
+  <title>✞Awizz INFO✞</title>
 
   <style>
     /* ---------- Цвета в одном месте ---------- */
     :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --text: #e2e8f0;
-      --accent: #38bdf8;
+      --brown:  #4a2c17;   /* коричневый */
+      --orange: #ff7a1a;   /* рыжий */
+      --black:  #0b0b0f;   /* чёрный */
+      --pink:   #ff4fa3;   /* розовый */
+      --blue:   #4cc9f0;   /* голубой */
+      --card:   rgba(24, 14, 9, 0.8);
+      --text:   #acfbff;
+      --violet: #6000c3;
     }
 
     /* ---------- Общие настройки ---------- */
@@ -19,38 +23,60 @@
 
     body {
       font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
       color: var(--text);
       line-height: 1.6;
+      min-height: 100vh;
+
+      /* Анимированный фон: цвета плавно переливаются */
+      background: linear-gradient(-45deg, #0b0b0f, #4a2c17, #0b0b0f, #3d1030, #0b0b0f, #0c2a3a);
+      background-size: 400% 400%;
+      animation: bgMove 20s ease infinite;
     }
 
     /* ---------- Шапка ---------- */
     header {
+      position: relative;
+      overflow: hidden;
       text-align: center;
       padding: 100px 20px 80px;
-      background: radial-gradient(circle at right, #4a1010, #470066);
-      animation: fadeUp 1s ease both;
+      
     }
 
     header h1 { font-size: 2.8rem; margin-bottom: 10px; }
     header p  { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
-/*-------- Аватарка ----------*/
-    .avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
+/* ---------- Видео в шапке ---------- */
+.bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 4px solid white;
-  margin-bottom: 20px;
+  z-index: 0;
 }
+
+    /* ---------- Аватарка ---------- */
+    .avatar {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--pink);
+      margin-bottom: 20px;
+      /* Подсветка вокруг рамки + пульсация */
+      box-shadow: 0 0 20px var(--violet), 0 0 45px rgb(233, 110, 237);
+      animation: glow 3s ease-in-out infinite;
+    }
+
     /* ---------- Кнопки ---------- */
     .btn {
+      position: relative;
       display: inline-block;
       padding: 12px 28px;
       border: none;
       border-radius: 999px;
-      background: white;
-      color: #0f172a;
+      background: var(--pink);
+      color: var(--black);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
@@ -58,7 +84,7 @@
     }
     .btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 20px rgba(255, 79, 163, 0.5);
     }
 
     /* ---------- Основная часть ---------- */
@@ -68,7 +94,7 @@
       padding: 60px 20px;
     }
 
-    h2 { text-align: center; margin-bottom: 30px; color: var(--accent); }
+    h2 { text-align: center; margin-bottom: 30px; color: var(--pink); }
 
     .about { text-align: center; margin-bottom: 60px; animation: fadeUp 1s 0.3s ease both; }
 
@@ -81,27 +107,83 @@
 
     .card {
       background: var(--card);
+      border: 1px solid rgba(255, 122, 26, 0.3);
       padding: 24px;
       border-radius: 16px;
       text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
       animation: fadeUp 1s 0.5s ease both;
     }
     .card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 12px 30px rgba(56, 189, 248, 0.25);
+      border-color: var(--blue);
+      box-shadow: 0 12px 30px rgba(76, 201, 240, 0.3);
     }
     .card .icon { font-size: 2.5rem; margin-bottom: 10px; }
-    .card h3 { margin-bottom: 8px; }
-    .card .btn { margin-top: 16px; background: var(--accent); }
+    .card h3 { margin-bottom: 8px; color: var(--orange); }
 
+    .artist{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+    }
+    .music{
+      display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 25, 255, 0.12156862745098039);
+  border: 1px solid rgba(255, 25, 248, 0.4);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s, background 0.2s, color 0.2s;
+                                                       }
+
+  
+    /* ---------- Кнопки-ссылки на игры ---------- */
+.games {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.game-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 25, 255, 0.12156862745098039);
+  border: 1px solid rgba(255, 25, 248, 0.4);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s, background 0.2s, color 0.2s;
+}
+
+.game-link:hover {
+  background: var(--orange);
+  color: var(--black);
+  transform: translateX(4px);
+}
+
+.game-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  object-fit: contain;
+}
     footer { text-align: center; padding: 30px; opacity: 0.6; }
 
     /* ---------- Всплывающее окно ---------- */
     .overlay {
       position: fixed;
       inset: 0;                       /* растянуть на весь экран */
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -114,7 +196,8 @@
 
     .modal {
       position: relative;
-      background: var(--card);
+      background: #1a0f0a;
+      border: 1px solid var(--pink);
       padding: 32px;
       border-radius: 16px;
       max-width: 420px;
@@ -123,6 +206,18 @@
       transform: scale(0.8);
       transition: transform 0.3s;
     }
+    
+    .modal-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+    
+.modal-links .game-link {
+  justify-content: center;   /* иконка и название по центру кнопки */
+}
+    .modal h3 { color: var(--orange); margin-bottom: 10px; }
     .overlay.open .modal { transform: scale(1); }
 
     .close {
@@ -136,10 +231,23 @@
       cursor: pointer;
     }
 
-    /* ---------- Анимация появления ---------- */
+    /* ---------- Анимации ---------- */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(30px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Переливание фона */
+    @keyframes bgMove {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Пульсация свечения аватарки */
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 15px var(--pink), 0 0 35px rgb(229, 79, 255); }
+      50%      { box-shadow: 0 0 28px var(--violet), 0 0 60px rgb(165, 35, 239); }
     }
   </style>
 </head>
@@ -147,42 +255,102 @@
 <body>
 
   <header>
+    <video class="bg-video" autoplay muted loop playsinline>
+    <source src="background/front.mp4" type="video/mp4">
+    </video>
+    <div class="header-content">
     <img src="avatar.jpg" alt="Моя аватарка" class="avatar">
-    <p>САЙТ.</p>
-    <button class="btn" data-title="✞Сайт Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
-      Рискни нажать)
+   <p>♱ awizz 雨が降る ♱</p>
+      <div class="card"</div>
+      <div class="icon"</div>
+      <p>Обо мне</p>
+    <p>Artem 18 y.o. основная часть времени уходит на игры, изучения кода, а также написания музыки.</p>
+    <button class="btn" data-title="✞INFO/Сайт Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
+      Зачем?
     </button>
+      <button class="btn" data-title="Где я есть"
+  data-text="Заходи ко мне сюда:"
+  data-links="socials">
+  Найди меня...
+      </button>
+    </div>
   </header>
 
   <main>
-    <section class="about">
-      <h2>Обо мне</h2>
-      <p>Обо мне.</p>
-    </section>
 
     <section>
-      <h2>Мои приколы</h2>
       <div class="cards">
         <div class="card">
-          <div class="icon"></div>
-          <h3>Первый раздел</h3>
-          <p>описание.</p>
-          <button class="btn" data-title="Первый раздел" data-text="описание">больше</button>
+  <div class="icon"></div>
+  <h3>Любимые игры</h3>
+  <p>Я не видел женщин уже 10.000 лет</p>
+
+  <div class="games">
+    <a class="game-link" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer">
+      <img class="game-icon" src="icons/valorant.png" alt="">
+      Valorant
+    </a>
+
+    <a class="game-link" href="https://store.steampowered.com/app/4465480/" target="_blank" rel="noopener noreferrer">
+      <img class="game-icon" src="icons/csgo.png" alt="">
+      CS:GO
+    </a>
+
+    <a class="game-link" href="https://store.steampowered.com/app/570/" target="_blank" rel="noopener noreferrer">
+      <img class="game-icon" src="icons/dota.png" alt="">
+      Dota 2
+    </a>
+
+    <a class="game-link" href="https://store.steampowered.com/app/367520/" target="_blank" rel="noopener noreferrer">
+      <img class="game-icon" src="icons/hollow.png" alt="">
+      Hollow Knight
+    </a>
+
+    <a class="game-link" href="https://store.steampowered.com/app/1030300/" target="_blank" rel="noopener noreferrer">
+      <img class="game-icon" src="icons/silk.png" alt="">
+      Hollow Knight: Silksong
+    </a>
+
+    <a class="game-link" href="https://genshin.hoyoverse.com/en/home" target="_blank" rel="noopener noreferrer">
+      <img class="game-icon" src="icons/genshin.png" alt="">
+      Genshin Impact
+    </a>
+  </div>
         </div>
 
         <div class="card">
           <div class="icon"></div>
-          <h3>Второй раздел</h3>
-          <p>описание</p>
-          <button class="btn" data-title="Второй раздел" data-text="описание">больше</button>
+          <h3>Любимые исполнители и их треки</h3>
+          <div class="artist">
+            <a class="music">
+          CUPSIZE
+            </a>
+            <a class="music">
+            h4rtbrkr
+            </a>
+            <a class="music">
+            kets4eki
+            </a>
+            <a class="music">
+            6arleyhuman
+            </a>
+            <a class="music">
+            asteria
+            </a>
+            <a class="music">
+            zhanulka
+            </a>
+            <a class="music">
+            madk1d
+            </a>
         </div>
-
+        </div>
         <div class="card">
           <div class="icon"></div>
-          <h3>Третий раздел</h3>
-          <p>описание</p>
-          <button class="btn" data-title="Третий раздел" data-text="описание">больше</button>
+          <h3>Любимые аниме</h3>
+          <p>Скоро...</p>
         </div>
+
       </div>
     </section>
   </main>
@@ -195,10 +363,27 @@
       <button class="close" id="closeBtn" aria-label="Закрыть">&times;</button>
       <h3 id="modalTitle"></h3>
       <p id="modalText"></p>
+      <div class="modal-links" id="modalLinks"
     </div>
   </div>
+<template id="socials">
+  <a class="game-link" href="https://t.me/@AvvIZzZ" target="_blank" rel="noopener noreferrer">
+    <img class="game-icon" src="icons/telegram.png" alt="">
+    Telegram
+  </a>
 
+  <a class="game-link" href="https://discord.gg/ySH5Hm8B" target="_blank" rel="noopener noreferrer">
+    <img class="game-icon" src="icons/discord.png" alt="">
+    Discord
+  </a>
+
+  <a class="game-link" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer">
+    <img class="game-icon" src="icons/steam.png" alt="">
+    Steam
+  </a>
+</template>
   <script>
+    const modalLinks = document.getElementById("modalLinks");
     const overlay    = document.getElementById("overlay");
     const modalTitle = document.getElementById("modalTitle");
     const modalText  = document.getElementById("modalText");
@@ -206,12 +391,24 @@
 
     // Находим все кнопки, у которых есть data-title
     document.querySelectorAll("[data-title]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        modalTitle.textContent = button.dataset.title;
-        modalText.textContent  = button.dataset.text;
-        overlay.classList.add("open");
-      });
-    });
+  button.addEventListener("click", function () {
+    modalTitle.textContent = button.dataset.title;
+    modalText.textContent  = button.dataset.text;
+
+    // Очищаем список ссылок от прошлого раза
+    modalLinks.innerHTML = "";
+
+    // Если у кнопки есть data-links, копируем нужный блок в окно
+    if (button.dataset.links) {
+      const tpl = document.getElementById(button.dataset.links);
+      if (tpl) {
+        modalLinks.appendChild(tpl.content.cloneNode(true));
+      }
+    }
+
+    overlay.classList.add("open");
+  });
+});
 
     function closeModal() {
       overlay.classList.remove("open");
@@ -228,4 +425,5 @@
   </script>
 
 </body>
-</html>
+    </html>
+      
