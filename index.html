@@ -52,7 +52,11 @@
       z-index: 0;
     }
 
-  
+    /* Содержимое шапки лежит выше видео */
+    .header-content {
+      position: relative;
+      z-index: 2;
+    }
 
     /* ---------- Аватарка ---------- */
     .avatar {
@@ -144,24 +148,25 @@
       transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
     }
     @media (hover: hover) {
-    .music:hover, anime-list:hover {
-      transform: translateX(4px);
-      background: var(--pink);
+      .music:hover {
+        transform: translateX(4px);
+        background: var(--pink);
+        color: var(--black);
+      }
     }
-    }
-    /* Выбранный артист */
-    .artist .music:active {
+    /* Подсветка только в момент нажатия (артисты и аниме) */
+    .music:active {
       background: var(--pink);
       color: var(--black);
       box-shadow: 0 0 18px rgba(255, 79, 163, 0.7);
       transform: scale(0.97);
     }
     /*-----------Плашка с играющим треком---------*/
-      .music.playing {
-        border-color: var(--pink);
-        box-shadow: 0 0 12px rgba(255,79,163,0.5);
-      }
-    .music.playing::before{
+    .music.playing {
+      border-color: var(--pink);
+      box-shadow: 0 0 12px rgba(255,79,163,0.5);
+    }
+    .music.playing::before {
       content: " 👠";
     }
 
@@ -195,6 +200,7 @@
     .game-icon {
       width: 24px;
       height: 24px;
+      flex: 0 0 24px;
       border-radius: 6px;
       object-fit: contain;
     }
@@ -288,19 +294,21 @@
     <div class="header-content">
       <img src="avatar.jpg" alt="Моя аватарка" class="avatar">
       <p>♱ awizz 雨が降る ♱</p>
+
       <div class="card">
-          <div class="icon"></div>
-      <p>Обо мне</p>
-      <p>Artem 18 y.o. основная часть времени уходит на игры, изучения кода, а также написания музыки.</p>
+        <div class="icon"></div>
+        <p>Обо мне</p>
+        <p>Artem 18 y.o. основная часть времени уходит на игры, изучения кода, а также написания музыки.</p>
 
-      <button class="btn" data-title="✞INFO/Сайт Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
-        Зачем?
-      </button>
+        <button class="btn" data-title="✞INFO/Сайт Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
+          Зачем?
+        </button>
 
-      <button class="btn" data-title="Где я есть" data-text="Ссылочки:" data-links="socials">
-        Найди меня...
-      </button>
-    </div>
+        <button class="btn" data-title="Где я есть" data-text="Ссылочки:" data-links="socials">
+          Найди меня...
+        </button>
+      </div> <!-- конец card -->
+    </div> <!-- конец header-content -->
   </header>
 
   <main>
@@ -341,40 +349,29 @@
           </div>
         </div>
 
-        <!-- Артисты -->
+        <!-- Артисты: у каждого свой трек в data-audio -->
         <div class="card">
           <div class="icon"></div>
           <h3>Любимые исполнители и их треки</h3>
           <div class="artist">
-            <a class="music">CUPSIZE</a>
-            <a class="music">h4rtbrkr</a>
-            <a class="music">kets4eki</a>
-            <a class="music">6arleyhuman</a>
-            <a class="music">asteria</a>
-            <a class="music">zhanulka</a>
-            <a class="music">Arctic Monkeys</a>
-          </div>
-        </div>
-              <div class="artist">
-                <a class="music" data-audio="music/cupsize.mp3> CUPSIZE</a>
-                <a class="music" data-audio="music/cupsize.mp3> CUPSIZE</a>
-                <a class="music" data-audio="music/cupsize.mp3> CUPSIZE</a>
-                <a class="music" data-audio="music/cupsize.mp3> CUPSIZE</a>
-                <a class="music" data-audio="music/cupsize.mp3> CUPSIZE</a>
-                <a class="music" data-audio="music/cupsize.mp3> CUPSIZE</a>
-                <a class="music" data-audio="music/cupsize.mp3> CUPSIZE</a>
-                  </div>
+            <a class="music" data-audio="music/cupsize.mp3">CUPSIZE</a>
+            <a class="music" data-audio="music/h4rtbrkr.mp3">h4rtbrkr</a>
+            <a class="music" data-audio="music/kets4eki.mp3">kets4eki</a>
+            <a class="music" data-audio="music/6arleyhuman.mp3">6arleyhuman</a>
+            <a class="music" data-audio="music/asteria.mp3">asteria</a>
+            <a class="music" data-audio="music/zhanulka.mp3">zhanulka</a>
+            <a class="music" data-audio="music/arctic.mp3">Arctic Monkeys</a>
           </div>
         </div>
 
-        <!-- Аниме: -->
+        <!-- Аниме -->
         <div class="card">
           <div class="icon"></div>
           <h3>Любимые аниме</h3>
           <div class="anime-list">
-            <a class="music" data-title="" data-text="" data-img="gifs/anime1.gif">Code Geass</a>
-            <a class="music" data-title="" data-text="" data-img="gifs/anime2.gif">Demon Slayer</a>
-            <a class="music" data-title="" data-text="" data-img="gifs/anime3.gif">Tokyo Ghoul</a>
+            <a class="music" data-title="Code Geass" data-text="" data-img="gifs/anime1.gif">Code Geass</a>
+            <a class="music" data-title="Demon Slayer" data-text="" data-img="gifs/anime2.gif">Demon Slayer</a>
+            <a class="music" data-title="Tokyo Ghoul" data-text="" data-img="gifs/anime3.gif">Tokyo Ghoul</a>
           </div>
         </div>
 
@@ -469,8 +466,41 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeModal();
     });
-    
 
+    // Проигрывание треков по нажатию на артиста
+    const player = new Audio();
+    let currentItem = null;
+
+    document.querySelectorAll(".music[data-audio]").forEach(function (item) {
+      item.addEventListener("click", function () {
+
+        // Тот же трек: пауза или продолжение
+        if (currentItem === item) {
+          if (player.paused) {
+            player.play();
+            item.classList.add("playing");
+          } else {
+            player.pause();
+            item.classList.remove("playing");
+          }
+          return;
+        }
+
+        // Другой трек: переключаемся
+        if (currentItem) currentItem.classList.remove("playing");
+        currentItem = item;
+        player.src = item.dataset.audio;
+        player.play().catch(function () {
+          item.classList.remove("playing");
+        });
+        item.classList.add("playing");
+      });
+    });
+
+    // Когда трек закончился, убираем отметку
+    player.addEventListener("ended", function () {
+      if (currentItem) currentItem.classList.remove("playing");
+    });
   </script>
 
 </body>
