@@ -42,14 +42,35 @@
     header h1 { font-size: 2.8rem; margin-bottom: 10px; }
     header p  { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
 
-    /* ---------- Видео в шапке ---------- */
+    /* ---------- Фоновое видео (на весь экран, под всем контентом) ---------- */
     .bg-video {
-      position: absolute;
+      position: fixed;
       inset: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
+      height: 100dvh;           /* не прыгает из-за адресной строки на телефоне */
       object-fit: cover;
-      z-index: 0;
+      object-position: center;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Лёгкое затемнение поверх видео, чтобы текст читался */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+    }
+
+    .header-content { position: relative; z-index: 1; }
+
+    /* Только для телефонов */
+    @media (max-width: 768px) {
+      .bg-video { object-position: 65% center; } /* меняй 30–70%, чтобы выбрать часть кадра */
+      header { padding: 60px 16px 50px; }
     }
 
     /* ---------- Аватарка ---------- */
@@ -102,7 +123,7 @@
 
     .card {
       background: var(--card);
-      border: 1px solid rgba(255, 122, 26, 0.3);
+      border: 1px solid rgba(238, 26, 255, 0.30196078431372547);
       padding: 24px;
       border-radius: 16px;
       text-align: center;
@@ -115,7 +136,7 @@
       box-shadow: 0 12px 30px rgba(76, 201, 240, 0.3);
     }
     .card .icon { font-size: 2.5rem; margin-bottom: 10px; }
-    .card h3 { margin-bottom: 8px; color: var(--orange); }
+    .card h3 { margin-bottom: 8px; color: var(--blue); }
 
     /* ---------- Списки артистов и аниме ---------- */
     .artist, .anime-list {
@@ -205,6 +226,7 @@
     .overlay {
       position: fixed;
       inset: 0;
+      z-index: 1000;
       background: rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
@@ -215,6 +237,10 @@
       padding: 20px;
     }
     .overlay.open { opacity: 1; visibility: visible; }
+    .overlay, .modal { overscroll-behavior: contain; }  /* прокрутка не уходит на страницу */
+
+    /* Пока окно открыто, страница под ним не прокручивается */
+    html.modal-open, html.modal-open body { overflow: hidden; }
 
     .modal {
       position: relative;
@@ -230,7 +256,7 @@
       transform: scale(0.8);
       transition: transform 0.3s;
     }
-    .modal h3 { color: var(--orange); margin-bottom: 10px; }
+    .modal h3 { color: var(--blue); margin-bottom: 10px; }
     .overlay.open .modal { transform: scale(1); }
 
     .modal-video {
@@ -403,6 +429,22 @@
   </template>
 
   <script>
+    // Для телефонов пробуем вертикальную версию видео; если файла нет, остаётся обычное
+    (function () {
+      const v = document.querySelector(".bg-video");
+      if (!v || !window.matchMedia("(max-width: 768px)").matches) return;
+      const src = v.querySelector("source");
+      const original = src.getAttribute("src");
+      src.setAttribute("src", "background/front-mobile.mp4");
+      src.addEventListener("error", function () {
+        src.setAttribute("src", original);
+        v.load();
+      }, { once: true });
+      v.load();
+    })();
+  </script>
+
+  <script>
     const overlay    = document.getElementById("overlay");
 const modalTitle = document.getElementById("modalTitle");
 const modalText  = document.getElementById("modalText");
@@ -439,6 +481,7 @@ document.querySelectorAll("[data-title]").forEach(function (button) {
     }
 
     overlay.classList.add("open");
+    document.documentElement.classList.add("modal-open");
   });
 });
 
@@ -451,6 +494,7 @@ if (modalVideo) {
 
 function closeModal() {
   overlay.classList.remove("open");
+  document.documentElement.classList.remove("modal-open");
   // Останавливаем видео, иначе звук продолжит играть за закрытым окном
   if (modalVideo) {
     modalVideo.pause();
