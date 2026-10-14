@@ -52,12 +52,6 @@
       z-index: 0;
     }
 
-    /* Содержимое шапки лежит выше видео */
-    .header-content {
-      position: relative;
-      z-index: 2;
-    }
-
     /* ---------- Аватарка ---------- */
     .avatar {
       position: relative;
@@ -239,13 +233,13 @@
     .modal h3 { color: var(--orange); margin-bottom: 10px; }
     .overlay.open .modal { transform: scale(1); }
 
-    .modal-img {
-      display: block;
-      width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      border-radius: 12px;
-      margin-top: 16px;
+    .modal-video {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  border-radius: 12px;
+  margin-top: 16px;
+  background: #000;
     }
 
     .modal-links {
@@ -297,15 +291,15 @@
 
       <div class="card">
         <div class="icon"></div>
-        <p>Обо мне</p>
-        <p>Artem 18 y.o. основная часть времени уходит на игры, изучения кода, а также написания музыки.</p>
+        <p>About me</p>
+        <p>Artem, 18 y.o. Most of my time goes into gaming, learning code, and writing music.</p>
 
-        <button class="btn" data-title="✞INFO/Сайт Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
-          Зачем?
+        <button class="btn" data-title="✞INFO/Site Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
+          What?
         </button>
 
-        <button class="btn" data-title="Где я есть" data-text="Ссылочки:" data-links="socials">
-          Найди меня...
+        <button class="btn" data-title="Where to find me" data-text="Links:" data-links="socials">
+          Find me....
         </button>
       </div> <!-- конец card -->
     </div> <!-- конец header-content -->
@@ -318,8 +312,7 @@
         <!-- Игры -->
         <div class="card">
           <div class="icon"></div>
-          <h3>Любимые игры</h3>
-          <p>Я не видел женщин уже 10.000 лет</p>
+          <h3>Favorite games</h3>
 
           <div class="games">
             <a class="game-link" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer">
@@ -352,26 +345,26 @@
         <!-- Артисты: у каждого свой трек в data-audio -->
         <div class="card">
           <div class="icon"></div>
-          <h3>Любимые исполнители и их треки</h3>
+          <h3>Favorite artists and their tracks</h3>
           <div class="artist">
-            <a class="music" data-audio="music/cupsize.mp3">CUPSIZE</a>
-            <a class="music" data-audio="music/h4rtbrkr.mp3">h4rtbrkr</a>
-            <a class="music" data-audio="music/kets4eki.mp3">kets4eki</a>
-            <a class="music" data-audio="music/6arleyhuman.mp3">6arleyhuman</a>
-            <a class="music" data-audio="music/asteria.mp3">asteria</a>
-            <a class="music" data-audio="music/zhanulka.mp3">zhanulka</a>
-            <a class="music" data-audio="music/arctic.mp3">Arctic Monkeys</a>
+            <a class="music" data-audio="music/cupsize.mp3">CUPSIZE - Минус, Плюс</a>
+            <a class="music" data-audio="music/h4rtbrkr.mp3">h4rtbrkr - I Hate You</a>
+            <a class="music" data-audio="music/kets4eki.mp3">kets4eki - party addict</a>
+            <a class="music" data-audio="music/6arleyhuman.mp3">6arleyhuman - BLOODBATH</a>
+            <a class="music" data-audio="music/asteria.mp3">asteria - DIE FIR YOU</a>
+            <a class="music" data-audio="music/zhanulka.mp3">zhanulka - Ток</a>
+            <a class="music" data-audio="music/arctic.mp3">Arctic Monkeys - 505</a>
           </div>
         </div>
 
         <!-- Аниме -->
         <div class="card">
           <div class="icon"></div>
-          <h3>Любимые аниме</h3>
+          <h3>Favorite anime</h3>
           <div class="anime-list">
-            <a class="music" data-title="Code Geass" data-text="" data-img="gifs/anime1.gif">Code Geass</a>
-            <a class="music" data-title="Demon Slayer" data-text="" data-img="gifs/anime2.gif">Demon Slayer</a>
-            <a class="music" data-title="Tokyo Ghoul" data-text="" data-img="gifs/anime3.gif">Tokyo Ghoul</a>
+            <a class="music" data-title="Code Geass" data-text="" data-video="video/anime1.mp4">Code Geass</a>
+            <a class="music" data-title="Demon Slayer" data-text="" data-video="video/anime2.mp4">Demon Slayer</a>
+            <a class="music" data-title="Tokyo Ghoul" data-text="" data-video="video/anime3.mp4">Tokyo Ghoul</a>
           </div>
         </div>
 
@@ -379,7 +372,8 @@
     </section>
   </main>
 
-  <footer>Это конец мужик...</footer>
+  <footer>This is the end?
+  <p>Maybe....</p></footer>
 
   <!-- Всплывающее окно (изначально скрыто) -->
   <div class="overlay" id="overlay">
@@ -387,7 +381,7 @@
       <button class="close" id="closeBtn" aria-label="Закрыть">&times;</button>
       <h3 id="modalTitle"></h3>
       <p id="modalText"></p>
-      <img class="modal-img" id="modalImg" alt="" style="display:none">
+      <video class="modal-video" id="modalVideo" playsinline loop muted style="display:none"></video>
       <div class="modal-links" id="modalLinks"></div>
     </div>
   </div>
@@ -398,9 +392,9 @@
       <img class="game-icon" src="icons/telegram.png" alt="">
       Telegram
     </a>
-    <a class="game-link" href="https://discord.gg/ySH5Hm8B" target="_blank" rel="noopener noreferrer">
+    <a class="game-link" href="" target="_blank" rel="noopener noreferrer">
       <img class="game-icon" src="icons/discord.png" alt="">
-      Discord
+      Not link, wait.
     </a>
     <a class="game-link" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer">
       <img class="game-icon" src="icons/steam.png" alt="">
@@ -410,52 +404,58 @@
 
   <script>
     const overlay    = document.getElementById("overlay");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalText  = document.getElementById("modalText");
-    const modalImg   = document.getElementById("modalImg");
-    const modalLinks = document.getElementById("modalLinks");
-    const closeBtn   = document.getElementById("closeBtn");
+const modalTitle = document.getElementById("modalTitle");
+const modalText  = document.getElementById("modalText");
+const modalVideo = document.getElementById("modalVideo");
+const modalLinks = document.getElementById("modalLinks");
+const closeBtn   = document.getElementById("closeBtn");
 
-    // Все кнопки с data-title открывают окно
-    document.querySelectorAll("[data-title]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        modalTitle.textContent = button.dataset.title;
-        modalText.textContent  = button.dataset.text || "";
+// Все кнопки с data-title открывают окно
+document.querySelectorAll("[data-title]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    modalTitle.textContent = button.dataset.title;
+    modalText.textContent  = button.dataset.text || "";
 
-        // Гифка
-        if (modalImg) {
-          if (button.dataset.img) {
-            modalImg.src = button.dataset.img;
-            modalImg.alt = button.dataset.title;
-            modalImg.style.display = "block";
-          } else {
-            modalImg.removeAttribute("src");
-            modalImg.style.display = "none";
-          }
-        }
-
-        // Ссылки на соцсети
-        if (modalLinks) {
-          modalLinks.innerHTML = "";
-          if (button.dataset.links) {
-            const tpl = document.getElementById(button.dataset.links);
-            if (tpl) modalLinks.appendChild(tpl.content.cloneNode(true));
-          }
-        }
-
-        overlay.classList.add("open");
-      });
-    });
-
-    // Если гифка не нашлась, прячем её
-    if (modalImg) {
-      modalImg.addEventListener("error", function () {
-        modalImg.style.display = "none";
-      });
+    // Видео
+    if (modalVideo) {
+      if (button.dataset.video) {
+        modalVideo.src = button.dataset.video;
+        modalVideo.style.display = "block";
+        modalVideo.play().catch(function () {});
+      } else {
+        modalVideo.pause();
+        modalVideo.removeAttribute("src");
+        modalVideo.style.display = "none";
+      }
     }
 
-    function closeModal() {
-      overlay.classList.remove("open");
+    // Ссылки на соцсети
+    if (modalLinks) {
+      modalLinks.innerHTML = "";
+      if (button.dataset.links) {
+        const tpl = document.getElementById(button.dataset.links);
+        if (tpl) modalLinks.appendChild(tpl.content.cloneNode(true));
+      }
+    }
+
+    overlay.classList.add("open");
+  });
+});
+
+// Если видео не нашлось, прячем его
+if (modalVideo) {
+  modalVideo.addEventListener("error", function () {
+    modalVideo.style.display = "none";
+  });
+}
+
+function closeModal() {
+  overlay.classList.remove("open");
+  // Останавливаем видео, иначе звук продолжит играть за закрытым окном
+  if (modalVideo) {
+    modalVideo.pause();
+    modalVideo.currentTime = 0;
+  }
     }
 
     // Закрыть: крестик, клик по тёмному фону, клавиша Esc
