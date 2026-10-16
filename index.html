@@ -70,6 +70,7 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .find:hover{box-shadow:0 0 18px rgba(240,138,60,.6);transform:translateY(-2px)}
 .find .arr{display:inline-block;transition:transform .35s;margin-left:8px}
 .find[aria-expanded=true] .arr{transform:rotate(180deg)}
+.btn-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 .socials{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s ease,opacity .4s;width:min(320px,100%)}
 .socials.open{max-height:260px;opacity:1}
 .socials .in{display:grid;gap:10px;padding-top:6px}
@@ -104,13 +105,28 @@ button:focus-visible,.track:focus-visible,.pill:focus-visible{outline:2px solid 
 .hint{font-size:.78rem;color:var(--maple);text-align:center;margin-top:8px;display:none}
 
 /* ====== Карточки ====== */
-.about{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
-.about .card{padding:24px;min-height:220px;text-align:center}
-.about h2{font-size:1.1rem;margin-bottom:18px;color:var(--anemo);font-weight:600}
-.about h2::after{content:"";display:block;height:2px;margin:12px auto 0;width:80%;border-radius:2px;
+.about{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
+.about .card{padding:26px 32px;text-align:left}
+.about h2{font-size:1.15rem;margin-bottom:20px;color:var(--anemo);font-weight:700;letter-spacing:.06em;text-align:center}
+.about h2::after{content:"";display:block;height:2px;margin:14px 0 0;width:100%;border-radius:2px;
   background:linear-gradient(90deg,transparent,var(--anemo),var(--silver),var(--crimson),transparent);opacity:.85}
-.about p{color:#d4e4e1;line-height:1.65;font-size:.95rem;margin-bottom:16px}
-.list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.about p{color:#d4e4e1;line-height:1.7;font-size:.95rem;margin-bottom:20px;text-align:left}
+.about p:last-child{margin-bottom:0}
+.list{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:10px;margin-top:6px}
+
+/* ====== Крест ♱: падает налево при наведении ====== */
+.x{display:inline-block;transform-origin:50% 100%;margin-right:8px}
+/* падение: упал -> подпрыгнул -> упал снова (классы переключает JS) */
+.x.fall{animation:xfall .9s forwards}
+@keyframes xfall{
+  0%  {transform:rotate(var(--s,0deg));animation-timing-function:cubic-bezier(.5,0,.9,.6)}
+  45% {transform:rotate(-90deg);animation-timing-function:cubic-bezier(.2,.7,.4,1)}
+  65% {transform:rotate(-72deg) translateY(-3px);animation-timing-function:cubic-bezier(.5,0,.9,.6)}
+  100%{transform:rotate(-90deg)}
+}
+/* подъём обратно */
+.x.rise{animation:xrise .5s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes xrise{from{transform:rotate(var(--s,-90deg))}to{transform:rotate(0deg)}}
 .pill{
   display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;border-radius:999px;
   font:inherit;font-weight:600;font-size:.95rem;color:var(--silver);text-decoration:none;cursor:pointer;
@@ -128,11 +144,12 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
 .modal{--bg:rgba(8,20,28,.96);max-width:460px;width:100%;max-height:90vh;overflow-y:auto;padding:32px;text-align:center;transform:scale(.85);transition:transform .3s}
 .overlay.open .modal{transform:scale(1)}
 .modal h3{color:var(--anemo);margin-bottom:10px}
+#modalText{text-align:left;white-space:pre-line;line-height:1.7}
 .modal-video{display:none;width:100%;max-height:60vh;border-radius:12px;margin-top:16px;background:#000}
 .close{position:absolute;top:10px;right:16px;background:none;border:none;color:var(--silver);font-size:1.8rem;cursor:pointer}
 
-@media(max-width:760px){.about{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+@media(max-width:760px){.about .card{padding:22px 18px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}.x{transition:none!important}}
 </style>
 </head>
 <body>
@@ -147,13 +164,16 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
       <div class="avatar-glow"></div>
       <div class="avatar" id="avatarMedia"></div>
     </div>
-    <div class="nick" id="nick">♱ awizz 雨が降る ♱</div>
+    <div class="nick" id="nick">♱ 𝙖𝙬𝙞𝙯𝙯 雨が降る♱</div>
 
-    <button class="find" id="findBtn" aria-expanded="false" aria-controls="socials">FIND ME<span class="arr">▾</span></button>
+    <div class="btn-row">
+      <button class="find fx" id="findBtn" aria-expanded="false" aria-controls="socials"><span class="x">♱</span>𝙁𝙄𝙉𝘿 𝙈𝙀<span class="arr">▾</span></button>
+      <button class="find fx" id="aboutBtn" data-title="♱ 𝘼𝙗𝙤𝙪𝙩 𝙢𝙚 ♱" data-text="Вайбкодер на HTML и Python. Свободное время уходит на игры, которые ты можешь увидеть ниже, или на музыку: я пишу её, черпая вдохновение и стиль у других исполнителей. Кстати, их треки ты тоже найдёшь ниже и можешь послушать в плеере :)&#10;&#10;Благодарен за просмотр моего INFO/SITE."><span class="x">♱</span>𝘼𝙗𝙤𝙪𝙩 𝙢𝙚</button>
+    </div>
     <div class="socials" id="socials">
       <div class="in">
-        <a class="pill" href="https://t.me/AvvIZzZ" target="_blank" rel="noopener noreferrer"><img src="icons/telegram.png" alt="">Telegram</a>
-        <a class="pill" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer"><img src="icons/steam.png" alt="">Steam</a>
+        <a class="pill fx" href="https://t.me/AvvIZzZ" target="_blank" rel="noopener noreferrer"><span class="x">♱</span><img src="icons/telegram.png" alt="">Telegram</a>
+        <a class="pill fx" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer"><span class="x">♱</span><img src="icons/steam.png" alt="">Steam</a>
       </div>
     </div>
   </section>
@@ -176,7 +196,7 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
       <button id="next" title="Вперёд" aria-label="Следующий">⏭</button>
       <button id="repeat" title="Повтор трека" aria-label="Повтор">↻</button>
       <div class="vol">🔊<input type="range" id="vol" min="0" max="1" step="0.01" value="0.5" aria-label="Громкость"></div>
-      <button class="list-toggle" id="listBtn" aria-expanded="false">Track list ▾</button>
+      <button class="list-toggle fx" id="listBtn" aria-expanded="false"><span class="x">♱</span>𝙏𝙧𝙖𝙘𝙠 𝙡𝙞𝙨𝙩 ▾</button>
     </div>
     <ul class="playlist" id="playlist"></ul>
     <div class="hint" id="hint"></div>
@@ -185,29 +205,31 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
   <!-- КАРТОЧКИ -->
   <section class="about">
     <article class="card">
-      <h2>About me</h2>
-      <p>Artem, 18 y.o. Most of my time goes into gaming, learning code, and writing music.</p>
-      <button class="pill small" data-title="✞INFO/Site Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">What?</button>
+      <h2>♱ 𝘼𝙢𝙚 𝙜𝙖 𝙁𝙪𝙧𝙪 ♱</h2>
+      <p>Дождь идёт, и листья не спорят. Они просто падают туда, куда несёт ветер.</p>
+      <p>Это не сайт. Это тихая комната, где играет музыка, пока за окном кто-то переживает осень.</p>
+      <p>Здесь не ищут смысл. Здесь сидят под навесом, слушают, как капли считают секунды, и делают вид, что никуда не спешат. Ветер и люди устроены одинаково: всё время куда-то идут, а потом оказывается, что просто кружили.</p>
+      <p>Пахнет мокрым клёном и остывшим чаем. Недописанные строчки. Треки, которые стоят на повторе. Окна, которые лень закрывать, потому что дождь всё равно красивее тишины.</p>
     </article>
 
     <article class="card">
-      <h2>Favorite games</h2>
+      <h2>♱ 𝙁𝙖𝙫𝙤𝙧𝙞𝙩𝙚 𝙜𝙖𝙢𝙚𝙨 ♱</h2>
       <div class="list">
-        <a class="pill" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer"><img src="icons/valorant.png" alt="">Valorant</a>
-        <a class="pill" href="https://store.steampowered.com/app/4465480/" target="_blank" rel="noopener noreferrer"><img src="icons/csgo.png" alt="">CS:GO</a>
-        <a class="pill" href="https://store.steampowered.com/app/570/" target="_blank" rel="noopener noreferrer"><img src="icons/dota.png" alt="">Dota 2</a>
-        <a class="pill" href="https://store.steampowered.com/app/367520/" target="_blank" rel="noopener noreferrer"><img src="icons/hollow.png" alt="">Hollow Knight</a>
-        <a class="pill" href="https://store.steampowered.com/app/1030300/" target="_blank" rel="noopener noreferrer"><img src="icons/silk.png" alt="">Hollow Knight: Silksong</a>
-        <a class="pill" href="https://genshin.hoyoverse.com/en/home" target="_blank" rel="noopener noreferrer"><img src="icons/genshin.png" alt="">Genshin Impact</a>
+        <a class="pill" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer"><img src="icons/valorant.png" alt="">𝙑𝙖𝙡𝙤𝙧𝙖𝙣𝙩</a>
+        <a class="pill" href="https://store.steampowered.com/app/4465480/" target="_blank" rel="noopener noreferrer"><img src="icons/csgo.png" alt="">𝘾𝙎:𝙂𝙊</a>
+        <a class="pill" href="https://store.steampowered.com/app/570/" target="_blank" rel="noopener noreferrer"><img src="icons/dota.png" alt="">𝘿𝙤𝙩𝙖 2</a>
+        <a class="pill" href="https://store.steampowered.com/app/367520/" target="_blank" rel="noopener noreferrer"><img src="icons/hollow.png" alt="">𝙃𝙤𝙡𝙡𝙤𝙬 𝙆𝙣𝙞𝙜𝙝𝙩</a>
+        <a class="pill" href="https://store.steampowered.com/app/1030300/" target="_blank" rel="noopener noreferrer"><img src="icons/silk.png" alt="">𝙃𝙤𝙡𝙡𝙤𝙬 𝙆𝙣𝙞𝙜𝙝𝙩: 𝙎𝙞𝙡𝙠𝙨𝙤𝙣𝙜</a>
+        <a class="pill" href="https://genshin.hoyoverse.com/en/home" target="_blank" rel="noopener noreferrer"><img src="icons/genshin.png" alt="">𝙂𝙚𝙣𝙨𝙝𝙞𝙣 𝙄𝙢𝙥𝙖𝙘𝙩</a>
       </div>
     </article>
 
     <article class="card">
-      <h2>Favorite anime</h2>
+      <h2>♱ 𝙁𝙖𝙫𝙤𝙧𝙞𝙩𝙚 𝙖𝙣𝙞𝙢𝙚 ♱</h2>
       <div class="list">
-        <button class="pill" data-title="Code Geass" data-video="video/anime1.mp4">Code Geass</button>
-        <button class="pill" data-title="Demon Slayer" data-video="video/anime2.mp4">Demon Slayer</button>
-        <button class="pill" data-title="Tokyo Ghoul" data-video="video/anime3.mp4">Tokyo Ghoul</button>
+        <button class="pill fx" data-title="𝘾𝙤𝙙𝙚 𝙂𝙚𝙖𝙨𝙨" data-video="video/anime1.mp4"><span class="x">♱</span>𝘾𝙤𝙙𝙚 𝙂𝙚𝙖𝙨𝙨</button>
+        <button class="pill fx" data-title="𝘿𝙚𝙢𝙤𝙣 𝙎𝙡𝙖𝙮𝙚𝙧" data-video="video/anime2.mp4"><span class="x">♱</span>𝘿𝙚𝙢𝙤𝙣 𝙎𝙡𝙖𝙮𝙚𝙧</button>
+        <button class="pill fx" data-title="𝙏𝙤𝙠𝙮𝙤 𝙂𝙝𝙤𝙪𝙡" data-video="video/anime3.mp4"><span class="x">♱</span>𝙏𝙤𝙠𝙮𝙤 𝙂𝙝𝙤𝙪𝙡</button>
       </div>
     </article>
   </section>
@@ -243,7 +265,8 @@ const TRACKS = [
   { title: 'BLOODBATH',     artist: '6arleyhuman',    src: 'music/6arleyhuman.mp3' },
   { title: 'DIE FIR YOU',   artist: 'asteria',        src: 'music/asteria.mp3' },
   { title: 'Ток',           artist: 'zhanulka',       src: 'music/zhanulka.mp3' },
-  { title: '505',           artist: 'Arctic Monkeys', src: 'music/arctic.mp3' }
+  { title: '505',           artist: 'Arctic Monkeys', src: 'music/arctic.mp3' },
+  { title: 'Wooden girl',   artist: 'bassvictim',     src: 'music/bassvictim.mp3' }
 ];
 
 /* ---------- Фото/видео в шапке и аватарке ---------- */
@@ -258,6 +281,35 @@ function mountMedia(el, cfg){
 }
 mountMedia(document.getElementById('bannerMedia'), BANNER);
 mountMedia(document.getElementById('avatarMedia'), AVATAR);
+
+/* ---------- Крест ♱: падает при наведении, при уходе поднимается ---------- */
+(() => {
+  const angle = el => {
+    const m = getComputedStyle(el).transform;
+    if(!m || m === 'none') return 0;
+    const [a,b] = m.slice(m.indexOf('(')+1, -1).split(',').map(parseFloat);
+    return Math.atan2(b,a) * 180 / Math.PI;
+  };
+  const drop = btn => {
+    const x = btn.querySelector('.x'); if(!x) return;
+    x.style.setProperty('--s', angle(x)+'deg');
+    x.classList.remove('rise'); x.classList.add('fall');
+  };
+  const lift = btn => {
+    const x = btn.querySelector('.x'); if(!x) return;
+    x.style.setProperty('--s', angle(x)+'deg');
+    x.classList.remove('fall'); x.classList.add('rise');
+  };
+  document.querySelectorAll('.fx').forEach(btn => {
+    btn.addEventListener('mouseenter', () => drop(btn));
+    btn.addEventListener('mouseleave', () => lift(btn));
+    btn.addEventListener('focus', () => { if(btn.matches(':focus-visible')) drop(btn); });
+    btn.addEventListener('blur', () => lift(btn));
+    btn.addEventListener('animationend', e => {
+      if(e.animationName === 'xrise') e.target.classList.remove('rise');
+    });
+  });
+})();
 
 /* ---------- FIND ME ---------- */
 const findBtn = document.getElementById('findBtn'), socials = document.getElementById('socials');
@@ -322,7 +374,7 @@ $('repeat').onclick  = e => { repeat=!repeat;  e.currentTarget.classList.toggle(
 $('listBtn').onclick = e => {
   const open = list.classList.toggle('open');
   e.currentTarget.setAttribute('aria-expanded',open);
-  e.currentTarget.textContent = open ? 'Список треков ▴' : 'Список треков ▾';
+  e.currentTarget.innerHTML = '<span class="x">♱</span>' + (open ? '𝙏𝙧𝙖𝙘𝙠 𝙡𝙞𝙨𝙩 ▴' : '𝙏𝙧𝙖𝙘𝙠 𝙡𝙞𝙨𝙩 ▾');
 };
 vol.oninput = () => { audio.volume = vol.value; paint(vol); };
 seek.oninput = () => { if(audio.duration) audio.currentTime = seek.value/100*audio.duration; paint(seek); };
