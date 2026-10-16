@@ -1,551 +1,386 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>✞Awizz INFO✞</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>✞Awizz INFO✞</title>
+<style>
+/* ====== Палитра Кадзухи ====== */
+:root{
+  --ink:#0b1a22; --card:rgba(10,24,32,.72);
+  --crimson:#c8383a; --anemo:#4fe3c1; --maple:#f08a3c; --silver:#eef6f4; --muted:#9db8b4;
+}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+*{box-sizing:border-box;margin:0}
+body{
+  font-family:"Segoe UI", Arial, sans-serif;color:var(--silver);min-height:100vh;
+  background:linear-gradient(120deg,#081a22,#0e3a40,#12303a,#3a1b2b,#0e3a40,#081a22);
+  background-size:400% 400%;animation:bg 28s ease-in-out infinite;padding:28px 16px 40px;
+}
+@keyframes bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+html.modal-open,html.modal-open body{overflow:hidden}
+#leaves{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1200}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:22px;position:relative;z-index:2}
 
-  <style>
-    /* ---------- Цвета в одном месте ---------- */
-    :root {
-      --brown:  #4a2c17;
-      --orange: #ff7a1a;
-      --black:  #0b0b0f;
-      --pink:   #ff4fa3;
-      --blue:   #4cc9f0;
-      --card:   rgba(24, 14, 9, 0.8);
-      --text:   #acfbff;
-      --violet: #6000c3;
-    }
-
-    /* ---------- Общие настройки ---------- */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-      background: linear-gradient(-45deg, #0b0b0f, #4a2c17, #0b0b0f, #3d1030, #0b0b0f, #0c2a3a);
-      background-size: 400% 400%;
-      animation: bgMove 20s ease infinite;
-    }
-
-    /* ---------- Шапка ---------- */
-    header {
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-      padding: 100px 20px 80px;
-    }
-
-    header h1 { font-size: 2.8rem; margin-bottom: 10px; }
-    header p  { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
-
-    /* ---------- Фоновое видео (на весь экран, под всем контентом) ---------- */
-    .bg-video {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100vh;
-      height: 100dvh;           /* не прыгает из-за адресной строки на телефоне */
-      object-fit: cover;
-      object-position: center;
-      z-index: -2;
-      pointer-events: none;
-    }
-
-    /* Лёгкое затемнение поверх видео, чтобы текст читался */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background: rgba(0, 0, 0, 0.35);
-      pointer-events: none;
-    }
-
-    .header-content { position: relative; z-index: 1; }
-
-    /* Только для телефонов */
-    @media (max-width: 768px) {
-      .bg-video { object-position: 65% center; } /* меняй 30–70%, чтобы выбрать часть кадра */
-      header { padding: 60px 16px 50px; }
-    }
-
-    /* ---------- Аватарка ---------- */
-    .avatar {
-      position: relative;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid var(--pink);
-      margin-bottom: 20px;
-      box-shadow: 0 0 20px var(--violet), 0 0 45px rgb(233, 110, 237);
-      animation: glow 3s ease-in-out infinite;
-    }
-
-    /* ---------- Кнопки ---------- */
-    .btn {
-      position: relative;
-      display: inline-block;
-      padding: 12px 28px;
-      border: none;
-      border-radius: 999px;
-      background: var(--pink);
-      color: var(--black);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(255, 79, 163, 0.5);
-    }
-
-    /* ---------- Основная часть ---------- */
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 60px 20px;
-    }
-
-    h2 { text-align: center; margin-bottom: 30px; color: var(--pink); }
-
-    /* ---------- Карточки ---------- */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(238, 26, 255, 0.30196078431372547);
-      padding: 24px;
-      border-radius: 16px;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      animation: fadeUp 1s 0.5s ease both;
-    }
-    .card:hover {
-      transform: translateY(-8px);
-      border-color: var(--blue);
-      box-shadow: 0 12px 30px rgba(76, 201, 240, 0.3);
-    }
-    .card .icon { font-size: 2.5rem; margin-bottom: 10px; }
-    .card h3 { margin-bottom: 8px; color: var(--blue); }
-
-    /* ---------- Списки артистов и аниме ---------- */
-    .artist, .anime-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .music {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255, 25, 255, 0.12);
-      border: 1px solid rgba(255, 25, 248, 0.4);
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-      user-select: none;
-      transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
-    }
-    @media (hover: hover) {
-      .music:hover {
-        transform: translateX(4px);
-        background: var(--pink);
-        color: var(--black);
-      }
-    }
-    /* Подсветка только в момент нажатия (артисты и аниме) */
-    .music:active {
-      background: var(--pink);
-      color: var(--black);
-      box-shadow: 0 0 18px rgba(255, 79, 163, 0.7);
-      transform: scale(0.97);
-    }
-    /*-----------Плашка с играющим треком---------*/
-    .music.playing {
-      border-color: var(--pink);
-      box-shadow: 0 0 12px rgba(255,79,163,0.5);
-    }
-    .music.playing::before {
-      content: " 👠";
-    }
-
-    /* ---------- Кнопки-ссылки на игры ---------- */
-    .games {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .game-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255,25,255, 0.12);
-      border: 1px solid rgba(255, 25, 248, 0.4);
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      transition: transform 0.2s, background 0.2s, color 0.2s;
-    }
-    .game-link:hover {
-      background: var(--pink);
-      color: var(--black);
-      transform: translateX(4px);
-    }
-
-    .game-icon {
-      width: 24px;
-      height: 24px;
-      flex: 0 0 24px;
-      border-radius: 6px;
-      object-fit: contain;
-    }
-
-    footer { text-align: center; padding: 30px; opacity: 0.6; }
-
-    /* ---------- Всплывающее окно ---------- */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s, visibility 0.3s;
-      padding: 20px;
-    }
-    .overlay.open { opacity: 1; visibility: visible; }
-    .overlay, .modal { overscroll-behavior: contain; }  /* прокрутка не уходит на страницу */
-
-    /* Пока окно открыто, страница под ним не прокручивается */
-    html.modal-open, html.modal-open body { overflow: hidden; }
-
-    .modal {
-      position: relative;
-      background: #1a0f0a;
-      border: 1px solid var(--pink);
-      padding: 32px;
-      border-radius: 16px;
-      max-width: 420px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      text-align: center;
-      transform: scale(0.8);
-      transition: transform 0.3s;
-    }
-    .modal h3 { color: var(--blue); margin-bottom: 10px; }
-    .overlay.open .modal { transform: scale(1); }
-
-    .modal-video {
-  display: block;
-  width: 100%;
-  max-height: 60vh;
-  border-radius: 12px;
-  margin-top: 16px;
-  background: #000;
-    }
-
-    .modal-links {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .modal-links .game-link { justify-content: center; }
-
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.8rem;
-      cursor: pointer;
-    }
-
-    /* ---------- Анимации ---------- */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes bgMove {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 15px var(--pink), 0 0 35px rgb(229, 79, 255); }
-      50%      { box-shadow: 0 0 28px var(--violet), 0 0 60px rgb(165, 35, 239); }
-    }
-  </style>
-</head>
-
-<body>
-
-  <header>
-    <video class="bg-video" autoplay muted loop playsinline>
-      <source src="background/front.mp4" type="video/mp4">
-    </video>
-
-    <div class="header-content">
-      <img src="avatar.jpg" alt="Моя аватарка" class="avatar">
-      <p>♱ awizz 雨が降る ♱</p>
-
-      <div class="card">
-        <div class="icon"></div>
-        <p>About me</p>
-        <p>Artem, 18 y.o. Most of my time goes into gaming, learning code, and writing music.</p>
-
-        <button class="btn" data-title="✞INFO/Site Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">
-          What?
-        </button>
-
-        <button class="btn" data-title="Where to find me" data-text="Links:" data-links="socials">
-          Find me....
-        </button>
-      </div> <!-- конец card -->
-    </div> <!-- конец header-content -->
-  </header>
-
-  <main>
-    <section>
-      <div class="cards">
-
-        <!-- Игры -->
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Favorite games</h3>
-
-          <div class="games">
-            <a class="game-link" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer">
-              <img class="game-icon" src="icons/valorant.png" alt="">
-              Valorant
-            </a>
-            <a class="game-link" href="https://store.steampowered.com/app/4465480/" target="_blank" rel="noopener noreferrer">
-              <img class="game-icon" src="icons/csgo.png" alt="">
-              CS:GO
-            </a>
-            <a class="game-link" href="https://store.steampowered.com/app/570/" target="_blank" rel="noopener noreferrer">
-              <img class="game-icon" src="icons/dota.png" alt="">
-              Dota 2
-            </a>
-            <a class="game-link" href="https://store.steampowered.com/app/367520/" target="_blank" rel="noopener noreferrer">
-              <img class="game-icon" src="icons/hollow.png" alt="">
-              Hollow Knight
-            </a>
-            <a class="game-link" href="https://store.steampowered.com/app/1030300/" target="_blank" rel="noopener noreferrer">
-              <img class="game-icon" src="icons/silk.png" alt="">
-              Hollow Knight: Silksong
-            </a>
-            <a class="game-link" href="https://genshin.hoyoverse.com/en/home" target="_blank" rel="noopener noreferrer">
-              <img class="game-icon" src="icons/genshin.png" alt="">
-              Genshin Impact
-            </a>
-          </div>
-        </div>
-
-        <!-- Артисты: у каждого свой трек в data-audio -->
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Favorite artists and their tracks</h3>
-          <div class="artist">
-            <a class="music" data-audio="music/cupsize.mp3">CUPSIZE - Минус, Плюс</a>
-            <a class="music" data-audio="music/h4rtbrkr.mp3">h4rtbrkr - I Hate You</a>
-            <a class="music" data-audio="music/kets4eki.mp3">kets4eki - party addict</a>
-            <a class="music" data-audio="music/6arleyhuman.mp3">6arleyhuman - BLOODBATH</a>
-            <a class="music" data-audio="music/asteria.mp3">asteria - DIE FIR YOU</a>
-            <a class="music" data-audio="music/zhanulka.mp3">zhanulka - Ток</a>
-            <a class="music" data-audio="music/arctic.mp3">Arctic Monkeys - 505</a>
-          </div>
-        </div>
-
-        <!-- Аниме -->
-        <div class="card">
-          <div class="icon"></div>
-          <h3>Favorite anime</h3>
-          <div class="anime-list">
-            <a class="music" data-title="Code Geass" data-text="" data-video="video/anime1.mp4">Code Geass</a>
-            <a class="music" data-title="Demon Slayer" data-text="" data-video="video/anime2.mp4">Demon Slayer</a>
-            <a class="music" data-title="Tokyo Ghoul" data-text="" data-video="video/anime3.mp4">Tokyo Ghoul</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <footer>This is the end?
-  <p>Maybe....</p></footer>
-
-  <!-- Всплывающее окно (изначально скрыто) -->
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <button class="close" id="closeBtn" aria-label="Закрыть">&times;</button>
-      <h3 id="modalTitle"></h3>
-      <p id="modalText"></p>
-      <video class="modal-video" id="modalVideo" playsinline loop muted style="display:none"></video>
-      <div class="modal-links" id="modalLinks"></div>
-    </div>
-  </div>
-
-  <!-- Заготовка со ссылками на соцсети -->
-  <template id="socials">
-    <a class="game-link" href="https://t.me/AvvIZzZ" target="_blank" rel="noopener noreferrer">
-      <img class="game-icon" src="icons/telegram.png" alt="">
-      Telegram
-    </a>
-    <a class="game-link" href="" target="_blank" rel="noopener noreferrer">
-      <img class="game-icon" src="icons/discord.png" alt="">
-      Not link, wait.
-    </a>
-    <a class="game-link" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer">
-      <img class="game-icon" src="icons/steam.png" alt="">
-      Steam
-    </a>
-  </template>
-
-  <script>
-    // Для телефонов пробуем вертикальную версию видео; если файла нет, остаётся обычное
-    (function () {
-      const v = document.querySelector(".bg-video");
-      if (!v || !window.matchMedia("(max-width: 768px)").matches) return;
-      const src = v.querySelector("source");
-      const original = src.getAttribute("src");
-      src.setAttribute("src", "background/front-mobile.mp4");
-      src.addEventListener("error", function () {
-        src.setAttribute("src", original);
-        v.load();
-      }, { once: true });
-      v.load();
-    })();
-  </script>
-
-  <script>
-    const overlay    = document.getElementById("overlay");
-const modalTitle = document.getElementById("modalTitle");
-const modalText  = document.getElementById("modalText");
-const modalVideo = document.getElementById("modalVideo");
-const modalLinks = document.getElementById("modalLinks");
-const closeBtn   = document.getElementById("closeBtn");
-
-// Все кнопки с data-title открывают окно
-document.querySelectorAll("[data-title]").forEach(function (button) {
-  button.addEventListener("click", function () {
-    modalTitle.textContent = button.dataset.title;
-    modalText.textContent  = button.dataset.text || "";
-
-    // Видео
-    if (modalVideo) {
-      if (button.dataset.video) {
-        modalVideo.src = button.dataset.video;
-        modalVideo.style.display = "block";
-        modalVideo.play().catch(function () {});
-      } else {
-        modalVideo.pause();
-        modalVideo.removeAttribute("src");
-        modalVideo.style.display = "none";
-      }
-    }
-
-    // Ссылки на соцсети
-    if (modalLinks) {
-      modalLinks.innerHTML = "";
-      if (button.dataset.links) {
-        const tpl = document.getElementById(button.dataset.links);
-        if (tpl) modalLinks.appendChild(tpl.content.cloneNode(true));
-      }
-    }
-
-    overlay.classList.add("open");
-    document.documentElement.classList.add("modal-open");
-  });
-});
-
-// Если видео не нашлось, прячем его
-if (modalVideo) {
-  modalVideo.addEventListener("error", function () {
-    modalVideo.style.display = "none";
-  });
+/* ====== Переливающаяся рамка + переливающееся свечение ====== */
+.card{
+  --a:0deg;--bg:var(--card);
+  position:relative;border-radius:20px;border:2px solid transparent;
+  background:linear-gradient(var(--bg),var(--bg)) padding-box,
+    conic-gradient(from var(--a),#4fe3c1,#eef6f4,#c8383a,#f08a3c,#eef6f4,#4fe3c1) border-box;
+  animation:spin 7s linear infinite,glowc 7s linear infinite;
+  backdrop-filter:blur(6px);
+}
+@keyframes spin{to{--a:360deg}}
+@keyframes glowc{
+  0%,100%{box-shadow:0 0 18px rgba(79,227,193,.38)}
+  25%{box-shadow:0 0 18px rgba(238,246,244,.3)}
+  50%{box-shadow:0 0 18px rgba(200,56,58,.4)}
+  75%{box-shadow:0 0 18px rgba(240,138,60,.4)}
 }
 
-function closeModal() {
-  overlay.classList.remove("open");
-  document.documentElement.classList.remove("modal-open");
-  // Останавливаем видео, иначе звук продолжит играть за закрытым окном
-  if (modalVideo) {
-    modalVideo.pause();
-    modalVideo.currentTime = 0;
-  }
+/* ====== Шапка ====== */
+.hero{min-height:340px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:34px 20px}
+.banner-media{position:absolute;inset:0;z-index:0}
+.banner-media img,.banner-media video{width:100%;height:100%;object-fit:cover;display:block}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(8,20,28,.6),transparent 60%)}
+.hero>*:not(.banner-media){position:relative;z-index:2}
+.avatar-box{position:relative;width:140px;height:140px}
+.avatar{
+  --a:0deg;position:absolute;inset:0;border-radius:50%;border:4px solid transparent;overflow:hidden;
+  background:linear-gradient(var(--ink),var(--ink)) padding-box,
+    conic-gradient(from var(--a),#4fe3c1,#eef6f4,#c8383a,#f08a3c,#eef6f4,#4fe3c1) border-box;
+  animation:spin 4s linear infinite;
+}
+.avatar img,.avatar video{width:100%;height:100%;object-fit:cover;display:block}
+.avatar-glow{
+  --a:0deg;position:absolute;inset:-8px;border-radius:50%;z-index:-1;
+  background:conic-gradient(from var(--a),#4fe3c1,#eef6f4,#c8383a,#f08a3c,#eef6f4,#4fe3c1);
+  filter:blur(16px);opacity:.75;animation:spin 4s linear infinite,pulse 3.5s ease-in-out infinite;
+}
+@keyframes pulse{50%{opacity:.4;transform:scale(1.06)}}
+.nick{font-size:2rem;letter-spacing:.06em;font-weight:700;text-align:center;text-shadow:0 2px 14px rgba(0,0,0,.7),0 0 18px rgba(79,227,193,.55)}
+
+/* ====== FIND ME ====== */
+.find{
+  font:inherit;font-weight:700;letter-spacing:.14em;color:#fff;cursor:pointer;
+  padding:10px 30px;border-radius:999px;border:1px solid rgba(255,255,255,.3);
+  background:linear-gradient(135deg,var(--crimson),var(--maple));transition:.25s;
+}
+.find:hover{box-shadow:0 0 18px rgba(240,138,60,.6);transform:translateY(-2px)}
+.find .arr{display:inline-block;transition:transform .35s;margin-left:8px}
+.find[aria-expanded=true] .arr{transform:rotate(180deg)}
+.socials{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s ease,opacity .4s;width:min(320px,100%)}
+.socials.open{max-height:260px;opacity:1}
+.socials .in{display:grid;gap:10px;padding-top:6px}
+
+/* ====== Плеер ====== */
+.player{padding:18px 22px}
+.now{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.disc{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:22px;background:radial-gradient(circle,#0b1a22 30%,#1e5a58 31%,#4fe3c1 70%)}
+.playing .disc{animation:rot 5s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.title{font-size:1.05rem}.sub{color:var(--muted);font-size:.85rem}
+.bar{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;background:rgba(255,255,255,.15);outline:none;cursor:pointer;flex:1;
+  background-image:linear-gradient(90deg,var(--anemo),var(--maple));background-repeat:no-repeat;background-size:var(--p,0%) 100%}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px var(--anemo)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:#fff}
+.ctrls{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 6px;flex-wrap:wrap}
+.player button{font:inherit;color:var(--silver);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:16px;transition:.2s}
+.player button:hover{background:rgba(79,227,193,.22);box-shadow:0 0 12px rgba(79,227,193,.5)}
+.player button.big{width:54px;height:54px;font-size:20px;background:linear-gradient(135deg,var(--crimson),var(--maple));border:0}
+.player button.on{background:rgba(79,227,193,.3);border-color:var(--anemo)}
+.player button.list-toggle{width:auto;height:auto;border-radius:12px;padding:8px 14px;font-size:.9rem}
+button:focus-visible,.track:focus-visible,.pill:focus-visible{outline:2px solid var(--anemo);outline-offset:2px}
+.vol{display:flex;align-items:center;gap:8px;width:100%;max-width:340px}
+.vol input{min-width:0}
+.playlist{max-height:0;overflow:hidden;transition:max-height .45s ease;list-style:none;padding:0}
+.playlist.open{max-height:300px;overflow-y:auto;margin-top:12px}
+.track{padding:10px 14px;border-radius:10px;cursor:pointer;display:flex;gap:10px;align-items:center;transition:.2s;border:1px solid transparent}
+.track:hover{background:rgba(255,255,255,.07)}
+.track.active{background:rgba(79,227,193,.14);border-color:rgba(79,227,193,.5)}
+.track .n{color:var(--muted);width:22px}
+.hint{font-size:.78rem;color:var(--maple);text-align:center;margin-top:8px;display:none}
+
+/* ====== Карточки ====== */
+.about{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
+.about .card{padding:24px;min-height:220px;text-align:center}
+.about h2{font-size:1.1rem;margin-bottom:18px;color:var(--anemo);font-weight:600}
+.about h2::after{content:"";display:block;height:2px;margin:12px auto 0;width:80%;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--anemo),var(--silver),var(--crimson),transparent);opacity:.85}
+.about p{color:#d4e4e1;line-height:1.65;font-size:.95rem;margin-bottom:16px}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.pill{
+  display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;border-radius:999px;
+  font:inherit;font-weight:600;font-size:.95rem;color:var(--silver);text-decoration:none;cursor:pointer;
+  background:rgba(79,227,193,.1);border:1px solid rgba(79,227,193,.4);transition:transform .2s,background .2s,box-shadow .2s;
+}
+.pill:hover,.pill:active{background:linear-gradient(135deg,var(--crimson),var(--maple));border-color:transparent;color:#fff;transform:translateX(4px);box-shadow:0 0 14px rgba(240,138,60,.5)}
+.pill.soon{opacity:.6;cursor:default}.pill.soon:hover{transform:none;background:rgba(79,227,193,.1);box-shadow:none;color:var(--silver);border-color:rgba(79,227,193,.4)}
+.pill img{width:24px;height:24px;flex:0 0 24px;border-radius:6px;object-fit:contain}
+.about .pill.small{display:inline-flex;margin:0 auto}
+footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
+
+/* ====== Всплывающее окно ====== */
+.overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;padding:20px;overscroll-behavior:contain}
+.overlay.open{opacity:1;visibility:visible}
+.modal{--bg:rgba(8,20,28,.96);max-width:460px;width:100%;max-height:90vh;overflow-y:auto;padding:32px;text-align:center;transform:scale(.85);transition:transform .3s}
+.overlay.open .modal{transform:scale(1)}
+.modal h3{color:var(--anemo);margin-bottom:10px}
+.modal-video{display:none;width:100%;max-height:60vh;border-radius:12px;margin-top:16px;background:#000}
+.close{position:absolute;top:10px;right:16px;background:none;border:none;color:var(--silver);font-size:1.8rem;cursor:pointer}
+
+@media(max-width:760px){.about{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+<canvas id="leaves"></canvas>
+
+<main class="wrap">
+
+  <!-- ШАПКА -->
+  <section class="card hero">
+    <div class="banner-media" id="bannerMedia"></div>
+    <div class="avatar-box">
+      <div class="avatar-glow"></div>
+      <div class="avatar" id="avatarMedia"></div>
+    </div>
+    <div class="nick" id="nick">♱ awizz 雨が降る ♱</div>
+
+    <button class="find" id="findBtn" aria-expanded="false" aria-controls="socials">FIND ME<span class="arr">▾</span></button>
+    <div class="socials" id="socials">
+      <div class="in">
+        <a class="pill" href="https://t.me/AvvIZzZ" target="_blank" rel="noopener noreferrer"><img src="icons/telegram.png" alt="">Telegram</a>
+        <span class="pill soon"><img src="icons/discord.png" alt="">Not link, wait.</span>
+        <a class="pill" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer"><img src="icons/steam.png" alt="">Steam</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
+  <section class="card player" id="player">
+    <div class="now">
+      <div class="disc">♪</div>
+      <div><div class="title" id="tTitle">—</div><div class="sub" id="tArtist">—</div></div>
+    </div>
+    <div class="bar">
+      <span id="cur">0:00</span>
+      <input type="range" id="seek" min="0" max="100" value="0" step="0.1" aria-label="Перемотка">
+      <span id="dur">0:00</span>
+    </div>
+    <div class="ctrls">
+      <button id="shuffle" title="Перемешать" aria-label="Перемешать">⇄</button>
+      <button id="prev" title="Назад" aria-label="Предыдущий">⏮</button>
+      <button id="play" class="big" title="Играть / пауза" aria-label="Играть или пауза">▶</button>
+      <button id="next" title="Вперёд" aria-label="Следующий">⏭</button>
+      <button id="repeat" title="Повтор трека" aria-label="Повтор">↻</button>
+      <div class="vol">🔊<input type="range" id="vol" min="0" max="1" step="0.01" value="0.5" aria-label="Громкость"></div>
+      <button class="list-toggle" id="listBtn" aria-expanded="false">Track list ▾</button>
+    </div>
+    <ul class="playlist" id="playlist"></ul>
+    <div class="hint" id="hint"></div>
+  </section>
+
+  <!-- КАРТОЧКИ -->
+  <section class="about">
+    <article class="card">
+      <h2>About me</h2>
+      <p>Artem, 18 y.o. Most of my time goes into gaming, learning code, and writing music.</p>
+      <button class="pill small" data-title="✞INFO/Site Дырявового Оленя✞" data-text="Познай мою дырявость и этого кода.">What?</button>
+    </article>
+
+    <article class="card">
+      <h2>Favorite games</h2>
+      <div class="list">
+        <a class="pill" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer"><img src="icons/valorant.png" alt="">Valorant</a>
+        <a class="pill" href="https://store.steampowered.com/app/4465480/" target="_blank" rel="noopener noreferrer"><img src="icons/csgo.png" alt="">CS:GO</a>
+        <a class="pill" href="https://store.steampowered.com/app/570/" target="_blank" rel="noopener noreferrer"><img src="icons/dota.png" alt="">Dota 2</a>
+        <a class="pill" href="https://store.steampowered.com/app/367520/" target="_blank" rel="noopener noreferrer"><img src="icons/hollow.png" alt="">Hollow Knight</a>
+        <a class="pill" href="https://store.steampowered.com/app/1030300/" target="_blank" rel="noopener noreferrer"><img src="icons/silk.png" alt="">Hollow Knight: Silksong</a>
+        <a class="pill" href="https://genshin.hoyoverse.com/en/home" target="_blank" rel="noopener noreferrer"><img src="icons/genshin.png" alt="">Genshin Impact</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2>Favorite anime</h2>
+      <div class="list">
+        <button class="pill" data-title="Code Geass" data-video="video/anime1.mp4">Code Geass</button>
+        <button class="pill" data-title="Demon Slayer" data-video="video/anime2.mp4">Demon Slayer</button>
+        <button class="pill" data-title="Tokyo Ghoul" data-video="video/anime3.mp4">Tokyo Ghoul</button>
+      </div>
+    </article>
+  </section>
+
+  <footer>This is the end?<p>Maybe....</p></footer>
+</main>
+
+<!-- Всплывающее окно -->
+<div class="overlay" id="overlay">
+  <div class="card modal">
+    <button class="close" id="closeBtn" aria-label="Закрыть">&times;</button>
+    <h3 id="modalTitle"></h3>
+    <p id="modalText"></p>
+    <video class="modal-video" id="modalVideo" playsinline loop muted></video>
+  </div>
+</div>
+
+<audio id="audio" preload="auto"></audio>
+
+<script>
+/* =====================================================
+   НАСТРОЙКИ
+   ===================================================== */
+// Фон шапки (пусто = пустой фон). type: 'image' или 'video'
+const BANNER = { type: 'video', src: 'background/front.mp4' };   // пример: { type:'video', src:'background/front.mp4' }
+// Аватарка
+const AVATAR = { type: 'image', src: 'avatar.jpg' };
+// Плейлист. ПЕРВЫЙ трек играет автоматически при входе на сайт.
+const TRACKS = [
+  { title: 'Минус, Плюс',   artist: 'CUPSIZE',        src: 'music/cupsize.mp3' },
+  { title: 'I Hate You',    artist: 'h4rtbrkr',       src: 'music/h4rtbrkr.mp3' },
+  { title: 'party addict',  artist: 'kets4eki',       src: 'music/kets4eki.mp3' },
+  { title: 'BLOODBATH',     artist: '6arleyhuman',    src: 'music/6arleyhuman.mp3' },
+  { title: 'DIE FIR YOU',   artist: 'asteria',        src: 'music/asteria.mp3' },
+  { title: 'Ток',           artist: 'zhanulka',       src: 'music/zhanulka.mp3' },
+  { title: '505',           artist: 'Arctic Monkeys', src: 'music/arctic.mp3' }
+];
+
+/* ---------- Фото/видео в шапке и аватарке ---------- */
+function mountMedia(el, cfg){
+  if(!cfg.src) return;
+  let m;
+  if(cfg.type === 'video'){
+    m = document.createElement('video');
+    m.src = cfg.src; m.autoplay = true; m.loop = true; m.muted = true; m.playsInline = true;
+  } else { m = document.createElement('img'); m.src = cfg.src; m.alt = 'Аватар'; }
+  el.appendChild(m);
+}
+mountMedia(document.getElementById('bannerMedia'), BANNER);
+mountMedia(document.getElementById('avatarMedia'), AVATAR);
+
+/* ---------- FIND ME ---------- */
+const findBtn = document.getElementById('findBtn'), socials = document.getElementById('socials');
+findBtn.onclick = () => {
+  const open = socials.classList.toggle('open');
+  findBtn.setAttribute('aria-expanded', open);
+};
+
+/* ---------- Всплывающее окно (What? и аниме) ---------- */
+const overlay = document.getElementById('overlay'), modalVideo = document.getElementById('modalVideo');
+document.querySelectorAll('[data-title]').forEach(b => b.addEventListener('click', () => {
+  document.getElementById('modalTitle').textContent = b.dataset.title;
+  document.getElementById('modalText').textContent = b.dataset.text || '';
+  if(b.dataset.video){ modalVideo.src = b.dataset.video; modalVideo.style.display = 'block'; modalVideo.play().catch(()=>{}); }
+  else { modalVideo.pause(); modalVideo.removeAttribute('src'); modalVideo.style.display = 'none'; }
+  overlay.classList.add('open'); document.documentElement.classList.add('modal-open');
+}));
+modalVideo.addEventListener('error', () => modalVideo.style.display = 'none');
+function closeModal(){
+  overlay.classList.remove('open'); document.documentElement.classList.remove('modal-open');
+  modalVideo.pause(); modalVideo.currentTime = 0;
+}
+document.getElementById('closeBtn').onclick = closeModal;
+overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+/* ---------- Плеер ---------- */
+const audio = document.getElementById('audio');
+const $ = id => document.getElementById(id);
+const playBtn=$('play'), seek=$('seek'), vol=$('vol'), list=$('playlist'), player=$('player');
+let idx = 0, shuffle = false, repeat = false;
+audio.volume = vol.value;
+const fmt = s => isFinite(s) ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '0:00';
+const paint = el => el.style.setProperty('--p', ((el.value-el.min)/(el.max-el.min)*100)+'%');
+
+TRACKS.forEach((t,i)=>{
+  const li = document.createElement('li');
+  li.className='track'; li.tabIndex=0;
+  li.innerHTML = `<span class="n">${i+1}</span><span>${t.artist} <span class="sub">— ${t.title}</span></span>`;
+  li.onclick = () => load(i, true);
+  li.onkeydown = e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();load(i,true);} };
+  list.appendChild(li);
+});
+function load(i, autoplay){
+  idx = (i + TRACKS.length) % TRACKS.length;
+  const t = TRACKS[idx];
+  audio.src = t.src;
+  $('tTitle').textContent = t.title; $('tArtist').textContent = t.artist;
+  [...list.children].forEach((li,k)=>li.classList.toggle('active',k===idx));
+  seek.value = 0; paint(seek);
+  if(autoplay) audio.play().catch(()=>{});
+}
+function nextIdx(){
+  if(shuffle && TRACKS.length>1){ let r; do{ r=Math.floor(Math.random()*TRACKS.length);}while(r===idx); return r; }
+  return idx+1;
+}
+playBtn.onclick = () => audio.paused ? audio.play().catch(()=>{}) : audio.pause();
+$('next').onclick = () => load(nextIdx(), true);
+$('prev').onclick = () => audio.currentTime>3 ? (audio.currentTime=0) : load(idx-1, true);
+$('shuffle').onclick = e => { shuffle=!shuffle; e.currentTarget.classList.toggle('on',shuffle); };
+$('repeat').onclick  = e => { repeat=!repeat;  e.currentTarget.classList.toggle('on',repeat); };
+$('listBtn').onclick = e => {
+  const open = list.classList.toggle('open');
+  e.currentTarget.setAttribute('aria-expanded',open);
+  e.currentTarget.textContent = open ? 'Список треков ▴' : 'Список треков ▾';
+};
+vol.oninput = () => { audio.volume = vol.value; paint(vol); };
+seek.oninput = () => { if(audio.duration) audio.currentTime = seek.value/100*audio.duration; paint(seek); };
+audio.onplay  = () => { playBtn.textContent='⏸'; player.classList.add('playing'); $('hint').style.display='none'; };
+audio.onpause = () => { playBtn.textContent='▶'; player.classList.remove('playing'); };
+audio.ontimeupdate = () => {
+  if(audio.duration){ seek.value = audio.currentTime/audio.duration*100; paint(seek); }
+  $('cur').textContent = fmt(audio.currentTime);
+};
+audio.onloadedmetadata = () => $('dur').textContent = fmt(audio.duration);
+audio.onended = () => repeat ? (audio.currentTime=0, audio.play()) : load(nextIdx(), true);
+paint(vol);
+
+// Автозапуск ПЕРВОГО трека; если браузер заблокирует — стартуем с первого касания
+load(0, false);
+audio.play().catch(() => {
+  $('hint').style.display='block';
+  const evs = ['pointerdown','keydown','touchstart'];
+  const start = () => { if(audio.paused) audio.play().catch(()=>{}); evs.forEach(ev=>removeEventListener(ev,start)); };
+  evs.forEach(ev=>addEventListener(ev,start));
+});
+
+/* ---------- Падающие кленовые листья ---------- */
+(() => {
+  const cv = $('leaves'), ctx = cv.getContext('2d');
+  let W, H;
+  const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
+  resize(); addEventListener('resize', resize);
+  const R = [[0,-1],[.17,-.62],[.40,-.72],[.36,-.30],[.78,-.42],[.62,-.06],[.95,.06],[.55,.34],[.62,.55],[.10,.42],[.05,.9]];
+  const leaf = new Path2D();
+  R.forEach(([x,y],i)=> i?leaf.lineTo(x,y):leaf.moveTo(x,y));
+  [...R].reverse().forEach(([x,y])=>leaf.lineTo(-x,y));
+  leaf.closePath();
+  const PAL = [{fill:'rgba(240,138,60,.9)',vein:'rgba(120,45,10,.6)'},{fill:'rgba(64,214,190,.85)',vein:'rgba(8,80,80,.6)'}];
+  const mk = init => ({
+    x:Math.random()*W, y:init?Math.random()*H:-40, s:10+Math.random()*16,
+    vy:.5+Math.random()*1.1, sway:20+Math.random()*40, ph:Math.random()*6.28, f:.004+Math.random()*.01,
+    r:Math.random()*6.28, vr:(Math.random()-.5)*.03, p:PAL[Math.random()<.5?0:1]
+  });
+  const L = Array.from({length:Math.min(40,Math.floor(innerWidth/30))}, () => mk(true));
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(const l of L){
+      l.y += l.vy; l.ph += l.f*1.5; l.r += l.vr;
+      const x = l.x + Math.sin(l.ph)*l.sway;
+      if(l.y > H+40) Object.assign(l, mk(false));
+      ctx.save(); ctx.translate(x,l.y); ctx.rotate(l.r); ctx.scale(l.s,l.s);
+      ctx.fillStyle = l.p.fill; ctx.fill(leaf);
+      ctx.strokeStyle = l.p.vein; ctx.lineWidth = .06;
+      ctx.beginPath(); ctx.moveTo(0,-.9); ctx.lineTo(0,1.15);
+      ctx.moveTo(0,.2); ctx.lineTo(.5,-.2); ctx.moveTo(0,.2); ctx.lineTo(-.5,-.2); ctx.stroke();
+      ctx.restore();
     }
-
-    // Закрыть: крестик, клик по тёмному фону, клавиша Esc
-    closeBtn.addEventListener("click", closeModal);
-    overlay.addEventListener("click", function (e) {
-      if (e.target === overlay) closeModal();
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeModal();
-    });
-
-    // Проигрывание треков по нажатию на артиста
-    const player = new Audio();
-    let currentItem = null;
-
-    document.querySelectorAll(".music[data-audio]").forEach(function (item) {
-      item.addEventListener("click", function () {
-
-        // Тот же трек: пауза или продолжение
-        if (currentItem === item) {
-          if (player.paused) {
-            player.play();
-            item.classList.add("playing");
-          } else {
-            player.pause();
-            item.classList.remove("playing");
-          }
-          return;
-        }
-
-        // Другой трек: переключаемся
-        if (currentItem) currentItem.classList.remove("playing");
-        currentItem = item;
-        player.src = item.dataset.audio;
-        player.play().catch(function () {
-          item.classList.remove("playing");
-        });
-        item.classList.add("playing");
-      });
-    });
-
-    // Когда трек закончился, убираем отметку
-    player.addEventListener("ended", function () {
-      if (currentItem) currentItem.classList.remove("playing");
-    });
-  </script>
-
+    requestAnimationFrame(draw);
+  }
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches) draw();
+})();
+</script>
 </body>
 </html>
