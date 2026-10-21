@@ -3,71 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#081a22">
 <title>✞Awizz INFO✞</title>
 <style>
-/* ====== Палитра Кадзухи ====== */
 :root{
-  --ink:#0b1a22; --card:rgba(10,24,32,.72);
+  --ink:#0b1a22; --card:rgba(10,24,32,.86);
   --crimson:#c8383a; --anemo:#4fe3c1; --maple:#f08a3c; --silver:#eef6f4; --muted:#9db8b4;
+  --ring:conic-gradient(#4fe3c1,#eef6f4,#c8383a,#f08a3c,#eef6f4,#4fe3c1);
 }
 @property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
-*{box-sizing:border-box;margin:0}
-body{
-  font-family:"Segoe UI", Arial, sans-serif;color:var(--silver);min-height:100vh;
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{background:#081a22}
+body{font-family:"Segoe UI",Arial,sans-serif;color:var(--silver);min-height:100vh;min-height:100dvh;padding:28px 16px 40px}
+
+/* Фон: градиент двигается через transform (GPU), а не через background-position (перерисовка) */
+body::before{
+  content:"";position:fixed;top:0;left:0;width:200%;height:100%;z-index:-1;
   background:linear-gradient(120deg,#081a22,#0e3a40,#12303a,#3a1b2b,#0e3a40,#081a22);
-  background-size:400% 400%;animation:bg 28s ease-in-out infinite;padding:28px 16px 40px;
+  animation:bg 40s ease-in-out infinite alternate;will-change:transform;
 }
-@keyframes bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes bg{to{transform:translate3d(-50%,0,0)}}
 html.modal-open,html.modal-open body{overflow:hidden}
-#leaves{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1200}
+#leaves{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1200;contain:strict}
 .wrap{max-width:980px;margin:0 auto;display:grid;gap:22px;position:relative;z-index:2}
 
-/* ====== Переливающаяся рамка + переливающееся свечение ====== */
+/* Карточки: статичная рамка и тень; анимация рамки только на десктопе и только в видимой области */
 .card{
-  --a:0deg;--bg:var(--card);
+  --a:135deg;--bg:var(--card);
   position:relative;border-radius:20px;border:2px solid transparent;
   background:linear-gradient(var(--bg),var(--bg)) padding-box,
     conic-gradient(from var(--a),#4fe3c1,#eef6f4,#c8383a,#f08a3c,#eef6f4,#4fe3c1) border-box;
-  animation:spin 7s linear infinite,glowc 7s linear infinite;
-  backdrop-filter:blur(6px);
+  box-shadow:0 0 18px rgba(79,227,193,.32);
 }
-@keyframes spin{to{--a:360deg}}
-@keyframes glowc{
-  0%,100%{box-shadow:0 0 18px rgba(79,227,193,.38)}
-  25%{box-shadow:0 0 18px rgba(238,246,244,.3)}
-  50%{box-shadow:0 0 18px rgba(200,56,58,.4)}
-  75%{box-shadow:0 0 18px rgba(240,138,60,.4)}
+@keyframes spin{to{--a:495deg}}
+@media (hover:hover) and (pointer:fine){
+  .card{animation:spin 7s linear infinite}
+  .card.off,.overlay:not(.open) .card{animation-play-state:paused}
 }
 
-/* ====== Шапка ====== */
+/* Шапка */
 .hero{min-height:340px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:34px 20px}
 .banner-media{position:absolute;inset:0;z-index:0}
 .banner-media img,.banner-media video{width:100%;height:100%;object-fit:cover;display:block}
 .hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(8,20,28,.6),transparent 60%)}
 .hero>*:not(.banner-media){position:relative;z-index:2}
+
+/* Аватар: вращается сам слой (transform), а не градиент */
 .avatar-box{position:relative;width:140px;height:140px}
-.avatar{
-  --a:0deg;position:absolute;inset:0;border-radius:50%;border:4px solid transparent;overflow:hidden;
-  background:linear-gradient(var(--ink),var(--ink)) padding-box,
-    conic-gradient(from var(--a),#4fe3c1,#eef6f4,#c8383a,#f08a3c,#eef6f4,#4fe3c1) border-box;
-  animation:spin 4s linear infinite;
-}
+.avatar-box::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--ring);animation:rot 4s linear infinite;will-change:transform}
+.avatar{position:absolute;inset:4px;border-radius:50%;overflow:hidden;background:var(--ink);z-index:1}
 .avatar img,.avatar video{width:100%;height:100%;object-fit:cover;display:block}
 .avatar-glow{
-  --a:0deg;position:absolute;inset:-8px;border-radius:50%;z-index:-1;
-  background:conic-gradient(from var(--a),#4fe3c1,#eef6f4,#c8383a,#f08a3c,#eef6f4,#4fe3c1);
-  filter:blur(16px);opacity:.75;animation:spin 4s linear infinite,pulse 3.5s ease-in-out infinite;
+  position:absolute;inset:-8px;border-radius:50%;z-index:-1;background:var(--ring);
+  filter:blur(14px);opacity:.75;animation:glow 4s linear infinite;will-change:transform,opacity;
 }
-@keyframes pulse{50%{opacity:.4;transform:scale(1.06)}}
+@keyframes glow{
+  0%{transform:rotate(0) scale(1);opacity:.75}
+  50%{transform:rotate(180deg) scale(1.06);opacity:.45}
+  100%{transform:rotate(360deg) scale(1);opacity:.75}
+}
 .nick{font-size:2rem;letter-spacing:.06em;font-weight:700;text-align:center;text-shadow:0 2px 14px rgba(0,0,0,.7),0 0 18px rgba(79,227,193,.55)}
 
-/* ====== FIND ME ====== */
+/* Кнопки */
 .find{
-  font:inherit;font-weight:700;letter-spacing:.14em;color:#fff;cursor:pointer;
+  font:inherit;font-weight:700;letter-spacing:.14em;color:#fff;cursor:pointer;touch-action:manipulation;
   padding:10px 30px;border-radius:999px;border:1px solid rgba(255,255,255,.3);
-  background:linear-gradient(135deg,var(--crimson),var(--maple));transition:.25s;
+  background:linear-gradient(135deg,var(--crimson),var(--maple));transition:box-shadow .25s,transform .25s;
 }
-.find:hover{box-shadow:0 0 18px rgba(240,138,60,.6);transform:translateY(-2px)}
 .find .arr{display:inline-block;transition:transform .35s;margin-left:8px}
 .find[aria-expanded=true] .arr{transform:rotate(180deg)}
 .btn-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
@@ -75,7 +77,7 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .socials.open{max-height:260px;opacity:1}
 .socials .in{display:grid;gap:10px;padding-top:6px}
 
-/* ====== Плеер ====== */
+/* Плеер */
 .player{padding:18px 22px}
 .now{display:flex;align-items:center;gap:14px;margin-bottom:12px}
 .disc{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:22px;background:radial-gradient(circle,#0b1a22 30%,#1e5a58 31%,#4fe3c1 70%)}
@@ -83,13 +85,12 @@ html.modal-open,html.modal-open body{overflow:hidden}
 @keyframes rot{to{transform:rotate(360deg)}}
 .title{font-size:1.05rem}.sub{color:var(--muted);font-size:.85rem}
 .bar{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted)}
-input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;background:rgba(255,255,255,.15);outline:none;cursor:pointer;flex:1;
+input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;background:rgba(255,255,255,.15);outline:none;cursor:pointer;flex:1;touch-action:pan-y;
   background-image:linear-gradient(90deg,var(--anemo),var(--maple));background-repeat:no-repeat;background-size:var(--p,0%) 100%}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px var(--anemo)}
 input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:#fff}
 .ctrls{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 6px;flex-wrap:wrap}
-.player button{font:inherit;color:var(--silver);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:16px;transition:.2s}
-.player button:hover{background:rgba(79,227,193,.22);box-shadow:0 0 12px rgba(79,227,193,.5)}
+.player button{font:inherit;color:var(--silver);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:16px;touch-action:manipulation;transition:background-color .2s,box-shadow .2s}
 .player button.big{width:54px;height:54px;font-size:20px;background:linear-gradient(135deg,var(--crimson),var(--maple));border:0}
 .player button.on{background:rgba(79,227,193,.3);border-color:var(--anemo)}
 .player button.list-toggle{width:auto;height:auto;border-radius:12px;padding:8px 14px;font-size:.9rem}
@@ -97,14 +98,13 @@ button:focus-visible,.track:focus-visible,.pill:focus-visible{outline:2px solid 
 .vol{display:flex;align-items:center;gap:8px;width:100%;max-width:340px}
 .vol input{min-width:0}
 .playlist{max-height:0;overflow:hidden;transition:max-height .45s ease;list-style:none;padding:0}
-.playlist.open{max-height:300px;overflow-y:auto;margin-top:12px}
-.track{padding:10px 14px;border-radius:10px;cursor:pointer;display:flex;gap:10px;align-items:center;transition:.2s;border:1px solid transparent}
-.track:hover{background:rgba(255,255,255,.07)}
+.playlist.open{max-height:300px;overflow-y:auto;margin-top:12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.track{padding:10px 14px;border-radius:10px;cursor:pointer;display:flex;gap:10px;align-items:center;transition:background-color .2s;border:1px solid transparent}
 .track.active{background:rgba(79,227,193,.14);border-color:rgba(79,227,193,.5)}
 .track .n{color:var(--muted);width:22px}
 .hint{font-size:.78rem;color:var(--maple);text-align:center;margin-top:8px;display:none}
 
-/* ====== Карточки ====== */
+/* Блоки */
 .about{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
 .about .card{padding:26px 32px;text-align:left}
 .about h2{font-size:1.15rem;margin-bottom:20px;color:var(--anemo);font-weight:700;letter-spacing:.06em;text-align:center}
@@ -114,9 +114,8 @@ button:focus-visible,.track:focus-visible,.pill:focus-visible{outline:2px solid 
 .about p:last-child{margin-bottom:0}
 .list{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:10px;margin-top:6px}
 
-/* ====== Крест ♱: падает налево при наведении ====== */
+/* Крест ♱ */
 .x{display:inline-block;transform-origin:50% 100%;margin-right:8px}
-/* падение: упал -> подпрыгнул -> упал снова (классы переключает JS) */
 .x.fall{animation:xfall .9s forwards}
 @keyframes xfall{
   0%  {transform:rotate(var(--s,0deg));animation-timing-function:cubic-bezier(.5,0,.9,.6)}
@@ -124,24 +123,31 @@ button:focus-visible,.track:focus-visible,.pill:focus-visible{outline:2px solid 
   65% {transform:rotate(-72deg) translateY(-3px);animation-timing-function:cubic-bezier(.5,0,.9,.6)}
   100%{transform:rotate(-90deg)}
 }
-/* подъём обратно */
 .x.rise{animation:xrise .5s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes xrise{from{transform:rotate(var(--s,-90deg))}to{transform:rotate(0deg)}}
 .pill{
   display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;border-radius:999px;
-  font:inherit;font-weight:600;font-size:.95rem;color:var(--silver);text-decoration:none;cursor:pointer;
-  background:rgba(79,227,193,.1);border:1px solid rgba(79,227,193,.4);transition:transform .2s,background .2s,box-shadow .2s;
+  font:inherit;font-weight:600;font-size:.95rem;color:var(--silver);text-decoration:none;cursor:pointer;touch-action:manipulation;
+  background:rgba(79,227,193,.1);border:1px solid rgba(79,227,193,.4);transition:transform .2s,box-shadow .2s;
 }
-.pill:hover,.pill:active{background:linear-gradient(135deg,var(--crimson),var(--maple));border-color:transparent;color:#fff;transform:translateX(4px);box-shadow:0 0 14px rgba(240,138,60,.5)}
-.pill.soon{opacity:.6;cursor:default}.pill.soon:hover{transform:none;background:rgba(79,227,193,.1);box-shadow:none;color:var(--silver);border-color:rgba(79,227,193,.4)}
+.pill:active{background:linear-gradient(135deg,var(--crimson),var(--maple));border-color:transparent;color:#fff}
+.pill.soon{opacity:.6;cursor:default}
 .pill img{width:24px;height:24px;flex:0 0 24px;border-radius:6px;object-fit:contain}
 .about .pill.small{display:inline-flex;margin:0 auto}
 footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
 
-/* ====== Всплывающее окно ====== */
-.overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;padding:20px;overscroll-behavior:contain}
+/* hover только на устройствах с мышью (на телефонах hover «залипает» и лишний раз перерисовывает) */
+@media (hover:hover){
+  .find:hover{box-shadow:0 0 18px rgba(240,138,60,.6);transform:translateY(-2px)}
+  .player button:hover{background-color:rgba(79,227,193,.22);box-shadow:0 0 12px rgba(79,227,193,.5)}
+  .track:hover{background:rgba(255,255,255,.07)}
+  .pill:not(.soon):hover{background:linear-gradient(135deg,var(--crimson),var(--maple));border-color:transparent;color:#fff;transform:translateX(4px);box-shadow:0 0 14px rgba(240,138,60,.5)}
+}
+
+/* Всплывающее окно */
+.overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;padding:20px;overscroll-behavior:contain}
 .overlay.open{opacity:1;visibility:visible}
-.modal{--bg:rgba(8,20,28,.96);max-width:460px;width:100%;max-height:90vh;overflow-y:auto;padding:32px;text-align:center;transform:scale(.85);transition:transform .3s}
+.modal{--bg:rgba(8,20,28,.97);max-width:460px;width:100%;max-height:90vh;max-height:90dvh;overflow-y:auto;padding:32px;text-align:center;transform:scale(.9);transition:transform .3s}
 .overlay.open .modal{transform:scale(1)}
 .modal h3{color:var(--anemo);margin-bottom:10px}
 #modalText{text-align:left;white-space:pre-line;line-height:1.7}
@@ -149,7 +155,10 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
 .close{position:absolute;top:10px;right:16px;background:none;border:none;color:var(--silver);font-size:1.8rem;cursor:pointer}
 
 @media(max-width:760px){.about .card{padding:22px 18px}}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}.x{transition:none!important}}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important}
+  body::before{animation:none}
+}
 </style>
 </head>
 <body>
@@ -157,8 +166,7 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
 
 <main class="wrap">
 
-  <!-- ШАПКА -->
-  <section class="card hero">
+  <section class="card hero" id="hero">
     <div class="banner-media" id="bannerMedia"></div>
     <div class="avatar-box">
       <div class="avatar-glow"></div>
@@ -172,13 +180,12 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
     </div>
     <div class="socials" id="socials">
       <div class="in">
-        <a class="pill fx" href="https://t.me/AvvIZzZ" target="_blank" rel="noopener noreferrer"><span class="x">♱</span><img src="icons/telegram.png" alt="">Telegram</a>
-        <a class="pill fx" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer"><span class="x">♱</span><img src="icons/steam.png" alt="">Steam</a>
+        <a class="pill fx" href="https://t.me/AvvIZzZ" target="_blank" rel="noopener noreferrer"><span class="x">♱</span><img src="icons/telegram.png" alt="" width="24" height="24" loading="lazy" decoding="async">Telegram</a>
+        <a class="pill fx" href="https://steamcommunity.com/id/AvvIz" target="_blank" rel="noopener noreferrer"><span class="x">♱</span><img src="icons/steam.png" alt="" width="24" height="24" loading="lazy" decoding="async">Steam</a>
       </div>
     </div>
   </section>
 
-  <!-- МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
   <section class="card player" id="player">
     <div class="now">
       <div class="disc">♪</div>
@@ -202,7 +209,6 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
     <div class="hint" id="hint"></div>
   </section>
 
-  <!-- КАРТОЧКИ -->
   <section class="about">
     <article class="card">
       <h2>♱ 𝘼𝙢𝙚 𝙜𝙖 𝙁𝙪𝙧𝙪 ♱</h2>
@@ -215,12 +221,12 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
     <article class="card">
       <h2>♱ 𝙁𝙖𝙫𝙤𝙧𝙞𝙩𝙚 𝙜𝙖𝙢𝙚𝙨 ♱</h2>
       <div class="list">
-        <a class="pill" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer"><img src="icons/valorant.png" alt="">𝙑𝙖𝙡𝙤𝙧𝙖𝙣𝙩</a>
-        <a class="pill" href="https://store.steampowered.com/app/4465480/" target="_blank" rel="noopener noreferrer"><img src="icons/csgo.png" alt="">𝘾𝙎:𝙂𝙊</a>
-        <a class="pill" href="https://store.steampowered.com/app/570/" target="_blank" rel="noopener noreferrer"><img src="icons/dota.png" alt="">𝘿𝙤𝙩𝙖 2</a>
-        <a class="pill" href="https://store.steampowered.com/app/367520/" target="_blank" rel="noopener noreferrer"><img src="icons/hollow.png" alt="">𝙃𝙤𝙡𝙡𝙤𝙬 𝙆𝙣𝙞𝙜𝙝𝙩</a>
-        <a class="pill" href="https://store.steampowered.com/app/1030300/" target="_blank" rel="noopener noreferrer"><img src="icons/silk.png" alt="">𝙃𝙤𝙡𝙡𝙤𝙬 𝙆𝙣𝙞𝙜𝙝𝙩: 𝙎𝙞𝙡𝙠𝙨𝙤𝙣𝙜</a>
-        <a class="pill" href="https://genshin.hoyoverse.com/en/home" target="_blank" rel="noopener noreferrer"><img src="icons/genshin.png" alt="">𝙂𝙚𝙣𝙨𝙝𝙞𝙣 𝙄𝙢𝙥𝙖𝙘𝙩</a>
+        <a class="pill" href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer"><img src="icons/valorant.png" alt="" width="24" height="24" loading="lazy" decoding="async">𝙑𝙖𝙡𝙤𝙧𝙖𝙣𝙩</a>
+        <a class="pill" href="https://store.steampowered.com/app/4465480/" target="_blank" rel="noopener noreferrer"><img src="icons/csgo.png" alt="" width="24" height="24" loading="lazy" decoding="async">𝘾𝙎:𝙂𝙊</a>
+        <a class="pill" href="https://store.steampowered.com/app/570/" target="_blank" rel="noopener noreferrer"><img src="icons/dota.png" alt="" width="24" height="24" loading="lazy" decoding="async">𝘿𝙤𝙩𝙖 2</a>
+        <a class="pill" href="https://store.steampowered.com/app/367520/" target="_blank" rel="noopener noreferrer"><img src="icons/hollow.png" alt="" width="24" height="24" loading="lazy" decoding="async">𝙃𝙤𝙡𝙡𝙤𝙬 𝙆𝙣𝙞𝙜𝙝𝙩</a>
+        <a class="pill" href="https://store.steampowered.com/app/1030300/" target="_blank" rel="noopener noreferrer"><img src="icons/silk.png" alt="" width="24" height="24" loading="lazy" decoding="async">𝙃𝙤𝙡𝙡𝙤𝙬 𝙆𝙣𝙞𝙜𝙝𝙩: 𝙎𝙞𝙡𝙠𝙨𝙤𝙣𝙜</a>
+        <a class="pill" href="https://genshin.hoyoverse.com/en/home" target="_blank" rel="noopener noreferrer"><img src="icons/genshin.png" alt="" width="24" height="24" loading="lazy" decoding="async">𝙂𝙚𝙣𝙨𝙝𝙞𝙣 𝙄𝙢𝙥𝙖𝙘𝙩</a>
       </div>
     </article>
 
@@ -237,27 +243,22 @@ footer{text-align:center;padding:10px;opacity:.6;position:relative;z-index:2}
   <footer>This is the end?<p>Maybe....</p></footer>
 </main>
 
-<!-- Всплывающее окно -->
 <div class="overlay" id="overlay">
   <div class="card modal">
     <button class="close" id="closeBtn" aria-label="Закрыть">&times;</button>
     <h3 id="modalTitle"></h3>
     <p id="modalText"></p>
-    <video class="modal-video" id="modalVideo" playsinline loop muted></video>
+    <video class="modal-video" id="modalVideo" playsinline loop muted preload="none"></video>
   </div>
 </div>
 
-<audio id="audio" preload="auto"></audio>
+<audio id="audio" preload="metadata"></audio>
 
 <script>
-/* =====================================================
-   НАСТРОЙКИ
-   ===================================================== */
-// Фон шапки (пусто = пустой фон). type: 'image' или 'video'
-const BANNER = { type: 'video', src: 'background/front.mp4' };   // пример: { type:'video', src:'background/front.mp4' }
-// Аватарка
+/* ===================== НАСТРОЙКИ ===================== */
+// poster — картинка-заглушка для режима экономии трафика / reduced-motion (необязательно)
+const BANNER = { type: 'video', src: 'background/front.mp4', poster: '' };
 const AVATAR = { type: 'image', src: 'avatar.jpg' };
-// Плейлист. ПЕРВЫЙ трек играет автоматически при входе на сайт.
 const TRACKS = [
   { title: 'Минус, Плюс',   artist: 'CUPSIZE',        src: 'music/cupsize.mp3' },
   { title: 'I Hate You',    artist: 'h4rtbrkr',       src: 'music/h4rtbrkr.mp3' },
@@ -269,20 +270,53 @@ const TRACKS = [
   { title: 'Wooden girl',   artist: 'bassvictim',     src: 'music/bassvictim.mp3' }
 ];
 
-/* ---------- Фото/видео в шапке и аватарке ---------- */
-function mountMedia(el, cfg){
-  if(!cfg.src) return;
-  let m;
-  if(cfg.type === 'video'){
-    m = document.createElement('video');
-    m.src = cfg.src; m.autoplay = true; m.loop = true; m.muted = true; m.playsInline = true;
-  } else { m = document.createElement('img'); m.src = cfg.src; m.alt = 'Аватар'; }
-  el.appendChild(m);
-}
-mountMedia(document.getElementById('bannerMedia'), BANNER);
-mountMedia(document.getElementById('avatarMedia'), AVATAR);
+const $ = id => document.getElementById(id);
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse = matchMedia('(pointer: coarse)').matches;
+const saveData = !!(navigator.connection && navigator.connection.saveData);
 
-/* ---------- Крест ♱: падает при наведении, при уходе поднимается ---------- */
+/* ---------- Видимость: пауза видео и анимаций вне экрана ---------- */
+let bannerVideo = null, heroVisible = true, modalOpen = false;
+const syncBanner = () => {
+  if(!bannerVideo) return;
+  (heroVisible && !modalOpen && !document.hidden) ? bannerVideo.play().catch(()=>{}) : bannerVideo.pause();
+};
+document.addEventListener('visibilitychange', syncBanner);
+
+if('IntersectionObserver' in window){
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    e.target.classList.toggle('off', !e.isIntersecting);
+    if(e.target.id === 'hero'){ heroVisible = e.isIntersecting; syncBanner(); }
+  }), { rootMargin: '80px' });
+  document.querySelectorAll('.card:not(.modal)').forEach(c => io.observe(c));
+}
+
+/* ---------- Фото/видео в шапке и аватарке ---------- */
+function mountMedia(el, cfg, isBanner){
+  if(!cfg.src) return null;
+  let m;
+  if(cfg.type === 'video' && !(isBanner && (saveData || reduceMotion))){
+    m = document.createElement('video');
+    m.muted = true; m.loop = true; m.playsInline = true; m.autoplay = true;
+    m.setAttribute('muted',''); m.setAttribute('playsinline','');
+    m.disablePictureInPicture = true; m.preload = 'auto';
+    if(cfg.poster) m.poster = cfg.poster;
+    m.src = cfg.src;
+    el.appendChild(m);
+    return m;
+  }
+  const src = cfg.type === 'video' ? cfg.poster : cfg.src;
+  if(!src) return null;
+  m = document.createElement('img');
+  m.src = src; m.alt = 'Аватар'; m.decoding = 'async';
+  if(!isBanner) m.fetchPriority = 'high';
+  el.appendChild(m);
+  return null;
+}
+bannerVideo = mountMedia($('bannerMedia'), BANNER, true);
+mountMedia($('avatarMedia'), AVATAR, false);
+
+/* ---------- Крест ♱ ---------- */
 (() => {
   const angle = el => {
     const m = getComputedStyle(el).transform;
@@ -290,21 +324,16 @@ mountMedia(document.getElementById('avatarMedia'), AVATAR);
     const [a,b] = m.slice(m.indexOf('(')+1, -1).split(',').map(parseFloat);
     return Math.atan2(b,a) * 180 / Math.PI;
   };
-  const drop = btn => {
+  const swap = (btn, add, del) => {
     const x = btn.querySelector('.x'); if(!x) return;
     x.style.setProperty('--s', angle(x)+'deg');
-    x.classList.remove('rise'); x.classList.add('fall');
-  };
-  const lift = btn => {
-    const x = btn.querySelector('.x'); if(!x) return;
-    x.style.setProperty('--s', angle(x)+'deg');
-    x.classList.remove('fall'); x.classList.add('rise');
+    x.classList.remove(del); x.classList.add(add);
   };
   document.querySelectorAll('.fx').forEach(btn => {
-    btn.addEventListener('mouseenter', () => drop(btn));
-    btn.addEventListener('mouseleave', () => lift(btn));
-    btn.addEventListener('focus', () => { if(btn.matches(':focus-visible')) drop(btn); });
-    btn.addEventListener('blur', () => lift(btn));
+    btn.addEventListener('mouseenter', () => swap(btn,'fall','rise'));
+    btn.addEventListener('mouseleave', () => swap(btn,'rise','fall'));
+    btn.addEventListener('focus', () => { if(btn.matches(':focus-visible')) swap(btn,'fall','rise'); });
+    btn.addEventListener('blur', () => swap(btn,'rise','fall'));
     btn.addEventListener('animationend', e => {
       if(e.animationName === 'xrise') e.target.classList.remove('rise');
     });
@@ -312,125 +341,178 @@ mountMedia(document.getElementById('avatarMedia'), AVATAR);
 })();
 
 /* ---------- FIND ME ---------- */
-const findBtn = document.getElementById('findBtn'), socials = document.getElementById('socials');
-findBtn.onclick = () => {
-  const open = socials.classList.toggle('open');
-  findBtn.setAttribute('aria-expanded', open);
-};
+const findBtn = $('findBtn'), socials = $('socials');
+findBtn.onclick = () => findBtn.setAttribute('aria-expanded', socials.classList.toggle('open'));
 
-/* ---------- Всплывающее окно (What? и аниме) ---------- */
-const overlay = document.getElementById('overlay'), modalVideo = document.getElementById('modalVideo');
+/* ---------- Всплывающее окно ---------- */
+const overlay = $('overlay'), modalVideo = $('modalVideo');
 document.querySelectorAll('[data-title]').forEach(b => b.addEventListener('click', () => {
-  document.getElementById('modalTitle').textContent = b.dataset.title;
-  document.getElementById('modalText').textContent = b.dataset.text || '';
+  $('modalTitle').textContent = b.dataset.title;
+  $('modalText').textContent = b.dataset.text || '';
   if(b.dataset.video){ modalVideo.src = b.dataset.video; modalVideo.style.display = 'block'; modalVideo.play().catch(()=>{}); }
   else { modalVideo.pause(); modalVideo.removeAttribute('src'); modalVideo.style.display = 'none'; }
   overlay.classList.add('open'); document.documentElement.classList.add('modal-open');
+  modalOpen = true; syncBanner();
 }));
 modalVideo.addEventListener('error', () => modalVideo.style.display = 'none');
 function closeModal(){
   overlay.classList.remove('open'); document.documentElement.classList.remove('modal-open');
-  modalVideo.pause(); modalVideo.currentTime = 0;
+  modalVideo.pause(); modalVideo.removeAttribute('src'); modalVideo.load();
+  modalOpen = false; syncBanner();
 }
-document.getElementById('closeBtn').onclick = closeModal;
+$('closeBtn').onclick = closeModal;
 overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
 /* ---------- Плеер ---------- */
-const audio = document.getElementById('audio');
-const $ = id => document.getElementById(id);
-const playBtn=$('play'), seek=$('seek'), vol=$('vol'), list=$('playlist'), player=$('player');
-let idx = 0, shuffle = false, repeat = false;
+const audio = $('audio');
+const playBtn = $('play'), seek = $('seek'), vol = $('vol'), list = $('playlist'), player = $('player');
+const curEl = $('cur'), durEl = $('dur');
+let idx = 0, shuffle = false, dragging = false, lastSec = -1, activeLi = null;
 audio.volume = vol.value;
 const fmt = s => isFinite(s) ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '0:00';
 const paint = el => el.style.setProperty('--p', ((el.value-el.min)/(el.max-el.min)*100)+'%');
 
-TRACKS.forEach((t,i)=>{
+const frag = document.createDocumentFragment();
+TRACKS.forEach((t,i) => {
   const li = document.createElement('li');
-  li.className='track'; li.tabIndex=0;
+  li.className = 'track'; li.tabIndex = 0; li.dataset.i = i;
   li.innerHTML = `<span class="n">${i+1}</span><span>${t.artist} <span class="sub">— ${t.title}</span></span>`;
-  li.onclick = () => load(i, true);
-  li.onkeydown = e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();load(i,true);} };
-  list.appendChild(li);
+  frag.appendChild(li);
 });
+list.appendChild(frag);
+list.addEventListener('click', e => { const li = e.target.closest('.track'); if(li) load(+li.dataset.i, true); });
+list.addEventListener('keydown', e => {
+  const li = e.target.closest('.track');
+  if(li && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); load(+li.dataset.i, true); }
+});
+
 function load(i, autoplay){
   idx = (i + TRACKS.length) % TRACKS.length;
   const t = TRACKS[idx];
   audio.src = t.src;
   $('tTitle').textContent = t.title; $('tArtist').textContent = t.artist;
-  [...list.children].forEach((li,k)=>li.classList.toggle('active',k===idx));
-  seek.value = 0; paint(seek);
+  if(activeLi) activeLi.classList.remove('active');
+  activeLi = list.children[idx]; activeLi.classList.add('active');
+  seek.value = 0; paint(seek); lastSec = -1; curEl.textContent = '0:00'; durEl.textContent = '0:00';
   if(autoplay) audio.play().catch(()=>{});
 }
 function nextIdx(){
-  if(shuffle && TRACKS.length>1){ let r; do{ r=Math.floor(Math.random()*TRACKS.length);}while(r===idx); return r; }
-  return idx+1;
+  if(shuffle && TRACKS.length > 1){ let r; do{ r = Math.floor(Math.random()*TRACKS.length); }while(r === idx); return r; }
+  return idx + 1;
 }
 playBtn.onclick = () => audio.paused ? audio.play().catch(()=>{}) : audio.pause();
 $('next').onclick = () => load(nextIdx(), true);
-$('prev').onclick = () => audio.currentTime>3 ? (audio.currentTime=0) : load(idx-1, true);
-$('shuffle').onclick = e => { shuffle=!shuffle; e.currentTarget.classList.toggle('on',shuffle); };
-$('repeat').onclick  = e => { repeat=!repeat;  e.currentTarget.classList.toggle('on',repeat); };
+$('prev').onclick = () => audio.currentTime > 3 ? (audio.currentTime = 0) : load(idx-1, true);
+$('shuffle').onclick = e => { shuffle = !shuffle; e.currentTarget.classList.toggle('on', shuffle); };
+$('repeat').onclick = e => { audio.loop = !audio.loop; e.currentTarget.classList.toggle('on', audio.loop); };
 $('listBtn').onclick = e => {
   const open = list.classList.toggle('open');
-  e.currentTarget.setAttribute('aria-expanded',open);
+  e.currentTarget.setAttribute('aria-expanded', open);
   e.currentTarget.innerHTML = '<span class="x">♱</span>' + (open ? '𝙏𝙧𝙖𝙘𝙠 𝙡𝙞𝙨𝙩 ▴' : '𝙏𝙧𝙖𝙘𝙠 𝙡𝙞𝙨𝙩 ▾');
 };
 vol.oninput = () => { audio.volume = vol.value; paint(vol); };
-seek.oninput = () => { if(audio.duration) audio.currentTime = seek.value/100*audio.duration; paint(seek); };
-audio.onplay  = () => { playBtn.textContent='⏸'; player.classList.add('playing'); $('hint').style.display='none'; };
-audio.onpause = () => { playBtn.textContent='▶'; player.classList.remove('playing'); };
-audio.ontimeupdate = () => {
-  if(audio.duration){ seek.value = audio.currentTime/audio.duration*100; paint(seek); }
-  $('cur').textContent = fmt(audio.currentTime);
-};
-audio.onloadedmetadata = () => $('dur').textContent = fmt(audio.duration);
-audio.onended = () => repeat ? (audio.currentTime=0, audio.play()) : load(nextIdx(), true);
-paint(vol);
 
-// Автозапуск ПЕРВОГО трека; если браузер заблокирует — стартуем с первого касания
-load(0, false);
-audio.play().catch(() => {
-  $('hint').style.display='block';
-  const evs = ['pointerdown','keydown','touchstart'];
-  const start = () => { if(audio.paused) audio.play().catch(()=>{}); evs.forEach(ev=>removeEventListener(ev,start)); };
-  evs.forEach(ev=>addEventListener(ev,start));
+// Во время перетаскивания только обновляем вид; сама перемотка — один раз при отпускании
+seek.addEventListener('input', () => {
+  dragging = true; paint(seek);
+  if(audio.duration) curEl.textContent = fmt(seek.value/100*audio.duration);
+});
+seek.addEventListener('change', () => {
+  if(audio.duration) audio.currentTime = seek.value/100*audio.duration;
+  dragging = false;
 });
 
-/* ---------- Падающие кленовые листья ---------- */
+audio.onplay  = () => { playBtn.textContent = '⏸'; player.classList.add('playing'); $('hint').style.display = 'none'; };
+audio.onpause = () => { playBtn.textContent = '▶'; player.classList.remove('playing'); };
+audio.ontimeupdate = () => {
+  if(dragging || !audio.duration) return;
+  seek.value = audio.currentTime/audio.duration*100; paint(seek);
+  const s = audio.currentTime | 0;
+  if(s !== lastSec){ lastSec = s; curEl.textContent = fmt(audio.currentTime); }
+};
+audio.onloadedmetadata = () => durEl.textContent = fmt(audio.duration);
+audio.onended = () => load(nextIdx(), true);
+paint(vol);
+
+load(0, false);
+audio.play().catch(() => {
+  $('hint').style.display = 'block';
+  const evs = ['pointerdown','keydown','touchstart'];
+  const start = () => { if(audio.paused) audio.play().catch(()=>{}); evs.forEach(ev => removeEventListener(ev, start)); };
+  evs.forEach(ev => addEventListener(ev, start, { passive: true }));
+});
+
+/* ---------- Падающие листья (спрайты вместо Path2D на каждый кадр) ---------- */
 (() => {
-  const cv = $('leaves'), ctx = cv.getContext('2d');
-  let W, H;
-  const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
-  resize(); addEventListener('resize', resize);
+  const cv = $('leaves');
+  if(reduceMotion){ cv.remove(); return; }
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, rt;
+  const resize = () => {
+    const w = innerWidth, h = innerHeight;
+    if(w !== W || h !== H){ W = cv.width = w; H = cv.height = h; }
+  };
+  resize();
+  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(resize, 200); });
+
+  // Готовим листья один раз
   const R = [[0,-1],[.17,-.62],[.40,-.72],[.36,-.30],[.78,-.42],[.62,-.06],[.95,.06],[.55,.34],[.62,.55],[.10,.42],[.05,.9]];
   const leaf = new Path2D();
-  R.forEach(([x,y],i)=> i?leaf.lineTo(x,y):leaf.moveTo(x,y));
-  [...R].reverse().forEach(([x,y])=>leaf.lineTo(-x,y));
+  R.forEach(([x,y],i) => i ? leaf.lineTo(x,y) : leaf.moveTo(x,y));
+  [...R].reverse().forEach(([x,y]) => leaf.lineTo(-x,y));
   leaf.closePath();
-  const PAL = [{fill:'rgba(240,138,60,.9)',vein:'rgba(120,45,10,.6)'},{fill:'rgba(64,214,190,.85)',vein:'rgba(8,80,80,.6)'}];
-  const mk = init => ({
-    x:Math.random()*W, y:init?Math.random()*H:-40, s:10+Math.random()*16,
-    vy:.5+Math.random()*1.1, sway:20+Math.random()*40, ph:Math.random()*6.28, f:.004+Math.random()*.01,
-    r:Math.random()*6.28, vr:(Math.random()-.5)*.03, p:PAL[Math.random()<.5?0:1]
+  const SZ = 64, K = 26;
+  const sprites = [
+    ['rgba(240,138,60,.9)','rgba(120,45,10,.6)'],
+    ['rgba(64,214,190,.85)','rgba(8,80,80,.6)']
+  ].map(([fill,vein]) => {
+    const c = document.createElement('canvas'); c.width = c.height = SZ;
+    const g = c.getContext('2d');
+    g.translate(SZ/2, SZ/2); g.scale(K,K);
+    g.fillStyle = fill; g.fill(leaf);
+    g.strokeStyle = vein; g.lineWidth = .06;
+    g.beginPath(); g.moveTo(0,-.9); g.lineTo(0,1.15);
+    g.moveTo(0,.2); g.lineTo(.5,-.2); g.moveTo(0,.2); g.lineTo(-.5,-.2); g.stroke();
+    return c;
   });
-  const L = Array.from({length:Math.min(40,Math.floor(innerWidth/30))}, () => mk(true));
-  function draw(){
+
+  const reset = (l, init) => {
+    l.x = Math.random()*W; l.y = init ? Math.random()*H : -40;
+    l.s = 10 + Math.random()*16; l.vy = .5 + Math.random()*1.1;
+    l.sway = 20 + Math.random()*40; l.ph = Math.random()*6.28; l.f = .004 + Math.random()*.01;
+    l.r = Math.random()*6.28; l.vr = (Math.random()-.5)*.03; l.p = Math.random() < .5 ? 0 : 1;
+    return l;
+  };
+  // На телефонах листьев меньше и кадров меньше
+  const count = coarse ? Math.min(14, Math.floor(W/26)) : Math.min(32, Math.floor(W/30));
+  const L = Array.from({length: count}, () => reset({}, true));
+  const STEP = 1000 / (coarse ? 30 : 60);
+  let last = 0, raf = 0;
+
+  function frame(t){
+    raf = requestAnimationFrame(frame);
+    const el = t - last;
+    if(el < STEP - 2) return;
+    last = t;
+    const k = Math.min(el, 100) / 16.667;
+    ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0,0,W,H);
-    for(const l of L){
-      l.y += l.vy; l.ph += l.f*1.5; l.r += l.vr;
+    for(let i = 0; i < L.length; i++){
+      const l = L[i];
+      l.y += l.vy*k; l.ph += l.f*1.5*k; l.r += l.vr*k;
+      if(l.y > H + 40){ reset(l, false); continue; }
       const x = l.x + Math.sin(l.ph)*l.sway;
-      if(l.y > H+40) Object.assign(l, mk(false));
-      ctx.save(); ctx.translate(x,l.y); ctx.rotate(l.r); ctx.scale(l.s,l.s);
-      ctx.fillStyle = l.p.fill; ctx.fill(leaf);
-      ctx.strokeStyle = l.p.vein; ctx.lineWidth = .06;
-      ctx.beginPath(); ctx.moveTo(0,-.9); ctx.lineTo(0,1.15);
-      ctx.moveTo(0,.2); ctx.lineTo(.5,-.2); ctx.moveTo(0,.2); ctx.lineTo(-.5,-.2); ctx.stroke();
-      ctx.restore();
+      if(x < -40 || x > W + 40) continue;
+      const c = Math.cos(l.r), s = Math.sin(l.r), d = SZ*l.s/K;
+      ctx.setTransform(c, s, -s, c, x, l.y);
+      ctx.drawImage(sprites[l.p], -d/2, -d/2, d, d);
     }
-    requestAnimationFrame(draw);
   }
-  if(!matchMedia('(prefers-reduced-motion: reduce)').matches) draw();
+  const start = () => { if(!raf){ last = performance.now(); raf = requestAnimationFrame(frame); } };
+  const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  start();
 })();
 </script>
 </body>
