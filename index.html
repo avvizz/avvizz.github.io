@@ -479,15 +479,15 @@ audio.play().catch(() => {
 
   const reset = (l, init) => {
     l.x = Math.random()*W; l.y = init ? Math.random()*H : -40;
-    l.s = 10 + Math.random()*16; l.vy = .5 + Math.random()*1.1;
+    l.s = 10 + Math.random()*15; l.vy = .5 + Math.random()*1.1;
     l.sway = 20 + Math.random()*40; l.ph = Math.random()*6.28; l.f = .004 + Math.random()*.01;
     l.r = Math.random()*6.28; l.vr = (Math.random()-.5)*.03; l.p = Math.random() < .5 ? 0 : 1;
     return l;
   };
   // На телефонах листьев меньше и кадров меньше
-  const count = coarse ? Math.min(14, Math.floor(W/26)) : Math.min(32, Math.floor(W/30));
+  const count = coarse ? Math.min(14, Math.floor(W/26)) : Math.min(22, Math.floor(W/30));
   const L = Array.from({length: count}, () => reset({}, true));
-  const STEP = 1000 / (coarse ? 30 : 60);
+  const STEP = 1000 / (coarse ? 35 : 60);
   let last = 0, raf = 0;
 
   function frame(t){
